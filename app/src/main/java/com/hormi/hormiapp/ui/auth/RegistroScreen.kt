@@ -30,6 +30,7 @@ import com.hormi.hormiapp.ui.theme.PrimaryGreen
 @Composable
 fun RegistroScreen(
     onRegisterSuccess: () -> Unit,
+    onBackClick: () -> Unit,
     viewModel: RegistroViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -47,7 +48,7 @@ fun RegistroScreen(
         // Top Bar
         HormiAppHeader(
             title = "Crear cuenta",
-            onBackClick = { /* TODO: Volver atrás */ }
+            onBackClick = onBackClick
         )
 
         Spacer(modifier = Modifier.height(32.dp))

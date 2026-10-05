@@ -18,18 +18,22 @@ fun HormiAppNavigation(
         startDestination = Screen.Splash.route
     ) {
         composable(route = Screen.Splash.route) {
-            LoginScreen(
-                onLoginSuccess = {},
-                onForgotPasswordClick = {},
-                onNavigateToRegister = {
-                    navController.navigate(Screen.Registro.route) {
+            SplashScreen(
+                onSplashFinished = {
+                    navController.navigate(Screen.Login.route) {
                         popUpTo(Screen.Splash.route) { inclusive = true }
                     }
                 }
             )
         }
         composable(route = Screen.Login.route) {
-            // Login Screen goes here
+            LoginScreen(
+                onLoginSuccess = {},
+                onForgotPasswordClick = {},
+                onNavigateToRegister = {
+                    navController.navigate(Screen.Registro.route)
+                }
+            )
         }
         composable(route = Screen.Registro.route) {
             RegistroScreen(
@@ -37,6 +41,9 @@ fun HormiAppNavigation(
                     navController.navigate(Screen.Onboarding.route) {
                         popUpTo(Screen.Registro.route) { inclusive = true }
                     }
+                },
+                onBackClick = {
+                    navController.popBackStack()
                 }
             )
         }
