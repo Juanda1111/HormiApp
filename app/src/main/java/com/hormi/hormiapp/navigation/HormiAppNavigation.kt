@@ -5,6 +5,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.hormi.hormiapp.ui.splash.SplashScreen
 
 @Composable
 fun HormiAppNavigation(
@@ -15,7 +16,13 @@ fun HormiAppNavigation(
         startDestination = Screen.Splash.route
     ) {
         composable(route = Screen.Splash.route) {
-            // Splash Screen goes here
+            SplashScreen(
+                onSplashFinished = {
+                    navController.navigate(Screen.Login.route) {
+                        popUpTo(Screen.Splash.route) { inclusive = true }
+                    }
+                }
+            )
         }
         composable(route = Screen.Login.route) {
             // Login Screen goes here
