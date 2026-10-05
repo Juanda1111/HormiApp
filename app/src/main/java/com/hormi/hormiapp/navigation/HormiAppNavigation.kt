@@ -19,8 +19,13 @@ fun HormiAppNavigation(
     ) {
         composable(route = Screen.Splash.route) {
             SplashScreen(
-                onSplashFinished = {
+                onNavigateToLogin = {
                     navController.navigate(Screen.Login.route) {
+                        popUpTo(Screen.Splash.route) { inclusive = true }
+                    }
+                },
+                onNavigateToRegistro = {
+                    navController.navigate(Screen.Registro.route) {
                         popUpTo(Screen.Splash.route) { inclusive = true }
                     }
                 }

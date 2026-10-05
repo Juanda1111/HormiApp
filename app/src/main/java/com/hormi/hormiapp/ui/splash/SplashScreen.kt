@@ -29,6 +29,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.hormi.hormiapp.R
 import com.hormi.hormiapp.ui.theme.AccentYellow
 import com.hormi.hormiapp.ui.theme.PrimaryGreen
@@ -37,11 +40,19 @@ import kotlinx.coroutines.delay
 @Composable
 fun SplashScreen(
     modifier: Modifier = Modifier,
-    onSplashFinished: () -> Unit = {}
+    onNavigateToLogin: () -> Unit,
+    onNavigateToRegistro: () -> Unit,
+    viewModel: SplashViewModel = hiltViewModel()
 ) {
-    LaunchedEffect(key1 = true) {
-        delay(2000L) // 2 segundos de Splash
-        onSplashFinished()
+    val destination by viewModel.destination.collectAsState()
+
+    LaunchedEffect(key1 = destination) {
+        delay(2000L) // 2 segundos de animación visual del Splash
+        when (destination) {
+            SplashDestination.Login -> onNavigateToLogin()
+            SplashDestination.Registro -> onNavigateToRegistro()
+            null -> { /* Aún cargando el estado de la base de datos */ }
+        }
     }
 
     Box(
