@@ -25,6 +25,10 @@ import androidx.compose.ui.unit.sp
 import com.hormi.hormiapp.R
 import com.hormi.hormiapp.ui.theme.PrimaryGreen
 
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import com.hormi.hormiapp.ui.components.HormiAppHeader
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RegistroScreen(
@@ -42,30 +46,17 @@ fun RegistroScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.White)
-            .padding(24.dp)
+            .systemBarsPadding() // <- ESTO EVITA QUE LA UI PISE LOS BOTONES DEL SISTEMA
+            .padding(horizontal = 16.dp)
+            .verticalScroll(rememberScrollState()) // <- ESTO PERMITE SCROLL SI EL TECLADO TAPA
     ) {
+        Spacer(modifier = Modifier.height(16.dp))
+
         // Top Bar
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Icon(
-                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                contentDescription = "Atrás",
-                tint = Color.Black
-            )
-            Spacer(modifier = Modifier.width(16.dp))
-            Image(
-                painter = painterResource(id = R.drawable.hormiapp_logo),
-                contentDescription = "Logo",
-                modifier = Modifier.size(24.dp)
-            )
-            Spacer(modifier = Modifier.width(8.dp))
-            Column {
-                Text(text = "HormiApp", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = PrimaryGreen)
-                Text(text = "Crear cuenta", fontSize = 14.sp, fontWeight = FontWeight.Bold, color = Color.Black)
-            }
-        }
+        HormiAppHeader(
+            title = "Crear cuenta",
+            onBackClick = { /* TODO: Volver atrás */ }
+        )
 
         Spacer(modifier = Modifier.height(32.dp))
 
@@ -196,7 +187,7 @@ fun RegistroScreen(
             )
         )
 
-        Spacer(modifier = Modifier.weight(1f))
+        Spacer(modifier = Modifier.height(32.dp))
 
         // Botón Crear cuenta
         Button(
@@ -212,5 +203,7 @@ fun RegistroScreen(
         ) {
             Text(text = "Crear cuenta", fontSize = 16.sp, fontWeight = FontWeight.Bold)
         }
+        
+        Spacer(modifier = Modifier.height(32.dp)) // Espacio extra al final para el scroll
     }
 }
