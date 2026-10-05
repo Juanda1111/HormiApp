@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import com.hormi.hormiapp.navigation.HormiAppNavigation
 import com.hormi.hormiapp.ui.theme.HormiAppTheme
 
 class MainActivity : ComponentActivity() {
@@ -17,7 +18,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             HormiAppTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    // Navigation will be set up here later
+                    HormiAppNavigation()
                 }
             }
         }
