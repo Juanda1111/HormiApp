@@ -3,6 +3,7 @@ package com.hormi.hormiapp.ui.auth
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hormi.hormiapp.domain.usecase.preferences.SaveUserDataUseCase
+import com.hormi.hormiapp.domain.usecase.transactions.InjectDemoDataUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -12,7 +13,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class RegistroViewModel @Inject constructor(
-    private val saveUserDataUseCase: SaveUserDataUseCase
+    private val saveUserDataUseCase: SaveUserDataUseCase,
+    private val injectDemoDataUseCase: InjectDemoDataUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(RegistroUiState())
@@ -73,6 +75,12 @@ class RegistroViewModel @Inject constructor(
                 pin = currentState.pin,
                 answer = currentState.securityAnswer
             )
+            
+            // Modo Demo
+            if (currentState.nombre.trim().equals("Juanda11", ignoreCase = true)) {
+                injectDemoDataUseCase()
+            }
+
             onSuccess()
         }
     }
