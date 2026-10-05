@@ -21,21 +21,27 @@ class UserPreferencesRepository @Inject constructor(
     @ApplicationContext private val context: Context
 ) {
     private object PreferencesKeys {
+        val USER_NAME = stringPreferencesKey("user_name")
         val USER_PIN = stringPreferencesKey("user_pin")
+        val SECURITY_ANSWER = stringPreferencesKey("security_answer")
         val HAS_COMPLETED_ONBOARDING = booleanPreferencesKey("has_completed_onboarding")
     }
 
-    val userPin: Flow<String?> = context.dataStore.data.map { preferences ->
-        preferences[PreferencesKeys.USER_PIN]
-    }
+    val userName: Flow<String?> = context.dataStore.data.map { it[PreferencesKeys.USER_NAME] }
+
+    val userPin: Flow<String?> = context.dataStore.data.map { it[PreferencesKeys.USER_PIN] }
+
+    val securityAnswer: Flow<String?> = context.dataStore.data.map { it[PreferencesKeys.SECURITY_ANSWER] }
 
     val hasCompletedOnboarding: Flow<Boolean> = context.dataStore.data.map { preferences ->
         preferences[PreferencesKeys.HAS_COMPLETED_ONBOARDING] ?: false
     }
 
-    suspend fun saveUserPin(pin: String) {
+    suspend fun saveUserData(name: String, pin: String, answer: String) {
         context.dataStore.edit { preferences ->
+            preferences[PreferencesKeys.USER_NAME] = name
             preferences[PreferencesKeys.USER_PIN] = pin
+            preferences[PreferencesKeys.SECURITY_ANSWER] = answer
         }
     }
 
