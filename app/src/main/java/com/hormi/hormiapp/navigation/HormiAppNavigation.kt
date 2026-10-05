@@ -6,6 +6,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.hormi.hormiapp.ui.auth.LoginScreen
+import com.hormi.hormiapp.ui.auth.RecoverPinScreen
 import com.hormi.hormiapp.ui.auth.RegistroScreen
 import com.hormi.hormiapp.ui.splash.SplashScreen
 
@@ -34,7 +35,9 @@ fun HormiAppNavigation(
         composable(route = Screen.Login.route) {
             LoginScreen(
                 onLoginSuccess = {},
-                onForgotPasswordClick = {},
+                onForgotPasswordClick = {
+                    navController.navigate(Screen.RecoverPin.route)
+                },
                 onNavigateToRegister = {
                     navController.navigate(Screen.Registro.route)
                 }
@@ -46,6 +49,16 @@ fun HormiAppNavigation(
                     navController.navigate(Screen.Onboarding.route) {
                         popUpTo(Screen.Registro.route) { inclusive = true }
                     }
+                },
+                onBackClick = {
+                    navController.popBackStack()
+                }
+            )
+        }
+        composable(route = Screen.RecoverPin.route) {
+            RecoverPinScreen(
+                onRecoverSuccess = {
+                    navController.popBackStack()
                 },
                 onBackClick = {
                     navController.popBackStack()

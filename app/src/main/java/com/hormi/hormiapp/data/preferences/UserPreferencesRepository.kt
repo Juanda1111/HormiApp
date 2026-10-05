@@ -45,6 +45,12 @@ class UserPreferencesRepository @Inject constructor(
         }
     }
 
+    suspend fun saveUserPinOnly(pin: String) {
+        context.dataStore.edit { preferences ->
+            preferences[PreferencesKeys.USER_PIN] = pin
+        }
+    }
+
     suspend fun setOnboardingCompleted() {
         context.dataStore.edit { preferences ->
             preferences[PreferencesKeys.HAS_COMPLETED_ONBOARDING] = true

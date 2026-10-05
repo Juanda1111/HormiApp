@@ -27,3 +27,19 @@ class GetUserNameUseCase @Inject constructor(
         return repository.userName
     }
 }
+
+class GetSecurityAnswerUseCase @Inject constructor(
+    private val repository: UserPreferencesRepository
+) {
+    operator fun invoke(): Flow<String?> {
+        return repository.securityAnswer
+    }
+}
+
+class SaveUserPinOnlyUseCase @Inject constructor(
+    private val repository: UserPreferencesRepository
+) {
+    suspend operator fun invoke(pin: String) {
+        repository.saveUserPinOnly(pin)
+    }
+}
