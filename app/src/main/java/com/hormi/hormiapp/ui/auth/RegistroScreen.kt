@@ -3,10 +3,11 @@ package com.hormi.hormiapp.ui.auth
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.*
@@ -14,7 +15,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -22,25 +22,17 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.hormi.hormiapp.R
-import com.hormi.hormiapp.ui.theme.PrimaryGreen
-
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.hormi.hormiapp.ui.components.HormiAppHeader
+import com.hormi.hormiapp.ui.theme.PrimaryGreen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RegistroScreen(
-    onRegisterSuccess: () -> Unit = {}
+    onRegisterSuccess: () -> Unit,
+    viewModel: RegistroViewModel = hiltViewModel()
 ) {
-    var nombre by remember { mutableStateOf("") }
-    var pin by remember { mutableStateOf("") }
-    var confirmPin by remember { mutableStateOf("") }
-    var securityAnswer by remember { mutableStateOf("") }
-    
-    var pinVisible by remember { mutableStateOf(false) }
-    var confirmPinVisible by remember { mutableStateOf(false) }
+    val uiState by viewModel.uiState.collectAsState()
 
     Column(
         modifier = Modifier
@@ -80,17 +72,30 @@ fun RegistroScreen(
 
         Spacer(modifier = Modifier.height(32.dp))
 
+        // Mostrar Error si lo hay
+        if (uiState.error != null) {
+            Text(
+                text = uiState.error!!,
+                color = Color.Red,
+                fontSize = 14.sp,
+                modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp),
+                textAlign = TextAlign.Center
+            )
+        }
+
         // Nombre
         Text(text = "Nombre", fontSize = 12.sp, color = Color.DarkGray)
         Spacer(modifier = Modifier.height(4.dp))
         OutlinedTextField(
-            value = nombre,
-            onValueChange = { nombre = it },
+            value = uiState.nombre,
+            onValueChange = viewModel::onNombreChange,
             placeholder = { Text("Tu nombre", color = Color.LightGray) },
             modifier = Modifier.fillMaxWidth(),
             singleLine = true,
             shape = RoundedCornerShape(12.dp),
             colors = TextFieldDefaults.colors(
+                focusedTextColor = Color.Black,
+                unfocusedTextColor = Color.Black,
                 focusedIndicatorColor = PrimaryGreen,
                 unfocusedIndicatorColor = Color.LightGray,
                 unfocusedContainerColor = Color.Transparent,
@@ -104,24 +109,26 @@ fun RegistroScreen(
         Text(text = "PIN (4 dígitos)", fontSize = 12.sp, color = Color.DarkGray)
         Spacer(modifier = Modifier.height(4.dp))
         OutlinedTextField(
-            value = pin,
-            onValueChange = { if (it.length <= 4) pin = it },
+            value = uiState.pin,
+            onValueChange = viewModel::onPinChange,
             placeholder = { Text("• • • •", color = Color.LightGray) },
             modifier = Modifier.fillMaxWidth(),
             singleLine = true,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword),
-            visualTransformation = if (pinVisible) VisualTransformation.None else PasswordVisualTransformation(),
+            visualTransformation = if (uiState.pinVisible) VisualTransformation.None else PasswordVisualTransformation(),
             shape = RoundedCornerShape(12.dp),
             trailingIcon = {
-                IconButton(onClick = { pinVisible = !pinVisible }) {
+                IconButton(onClick = viewModel::togglePinVisibility) {
                     Icon(
-                        imageVector = if (pinVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
+                        imageVector = if (uiState.pinVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
                         contentDescription = "Toggle PIN visibility",
                         tint = Color.Gray
                     )
                 }
             },
             colors = TextFieldDefaults.colors(
+                focusedTextColor = Color.Black,
+                unfocusedTextColor = Color.Black,
                 focusedIndicatorColor = PrimaryGreen,
                 unfocusedIndicatorColor = Color.LightGray,
                 unfocusedContainerColor = Color.Transparent,
@@ -135,24 +142,26 @@ fun RegistroScreen(
         Text(text = "Confirmar tu PIN", fontSize = 12.sp, color = Color.DarkGray)
         Spacer(modifier = Modifier.height(4.dp))
         OutlinedTextField(
-            value = confirmPin,
-            onValueChange = { if (it.length <= 4) confirmPin = it },
+            value = uiState.confirmPin,
+            onValueChange = viewModel::onConfirmPinChange,
             placeholder = { Text("• • • •", color = Color.LightGray) },
             modifier = Modifier.fillMaxWidth(),
             singleLine = true,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword),
-            visualTransformation = if (confirmPinVisible) VisualTransformation.None else PasswordVisualTransformation(),
+            visualTransformation = if (uiState.confirmPinVisible) VisualTransformation.None else PasswordVisualTransformation(),
             shape = RoundedCornerShape(12.dp),
             trailingIcon = {
-                IconButton(onClick = { confirmPinVisible = !confirmPinVisible }) {
+                IconButton(onClick = viewModel::toggleConfirmPinVisibility) {
                     Icon(
-                        imageVector = if (confirmPinVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
+                        imageVector = if (uiState.confirmPinVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
                         contentDescription = "Toggle PIN visibility",
                         tint = Color.Gray
                     )
                 }
             },
             colors = TextFieldDefaults.colors(
+                focusedTextColor = Color.Black,
+                unfocusedTextColor = Color.Black,
                 focusedIndicatorColor = PrimaryGreen,
                 unfocusedIndicatorColor = Color.LightGray,
                 unfocusedContainerColor = Color.Transparent,
@@ -169,17 +178,19 @@ fun RegistroScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Pregunta de seguridad (Agregada según recomendación)
+        // Pregunta de seguridad
         Text(text = "Pregunta de seguridad: ¿Cuál es tu mayor sueño?", fontSize = 12.sp, color = Color.DarkGray)
         Spacer(modifier = Modifier.height(4.dp))
         OutlinedTextField(
-            value = securityAnswer,
-            onValueChange = { securityAnswer = it },
+            value = uiState.securityAnswer,
+            onValueChange = viewModel::onSecurityAnswerChange,
             placeholder = { Text("Tu respuesta", color = Color.LightGray) },
             modifier = Modifier.fillMaxWidth(),
             singleLine = true,
             shape = RoundedCornerShape(12.dp),
             colors = TextFieldDefaults.colors(
+                focusedTextColor = Color.Black,
+                unfocusedTextColor = Color.Black,
                 focusedIndicatorColor = PrimaryGreen,
                 unfocusedIndicatorColor = Color.LightGray,
                 unfocusedContainerColor = Color.Transparent,
@@ -192,8 +203,7 @@ fun RegistroScreen(
         // Botón Crear cuenta
         Button(
             onClick = {
-                // TODO: Validar y guardar en ViewModel
-                onRegisterSuccess()
+                viewModel.onRegisterClick(onSuccess = onRegisterSuccess)
             },
             modifier = Modifier
                 .fillMaxWidth()
