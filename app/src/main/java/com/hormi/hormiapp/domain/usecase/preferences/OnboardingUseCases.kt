@@ -7,8 +7,8 @@ import javax.inject.Inject
 class SetOnboardingCompletedUseCase @Inject constructor(
     private val repository: UserPreferencesRepository
 ) {
-    suspend operator fun invoke() {
-        repository.setOnboardingCompleted()
+    suspend operator fun invoke(income: String) {
+        repository.setOnboardingCompleted(income)
     }
 }
 

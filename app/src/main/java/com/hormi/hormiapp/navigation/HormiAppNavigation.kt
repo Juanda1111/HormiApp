@@ -8,6 +8,7 @@ import androidx.navigation.compose.rememberNavController
 import com.hormi.hormiapp.ui.auth.LoginScreen
 import com.hormi.hormiapp.ui.auth.RecoverPinScreen
 import com.hormi.hormiapp.ui.auth.RegistroScreen
+import com.hormi.hormiapp.ui.onboarding.OnboardingScreen
 import com.hormi.hormiapp.ui.splash.SplashScreen
 
 @Composable
@@ -66,7 +67,16 @@ fun HormiAppNavigation(
             )
         }
         composable(route = Screen.Onboarding.route) {
-            // Onboarding Screen goes here
+            OnboardingScreen(
+                onFinishOnboarding = {
+                    navController.navigate(Screen.Inicio.route) {
+                        popUpTo(Screen.Onboarding.route) { inclusive = true }
+                    }
+                },
+                onBackClick = {
+                    navController.popBackStack()
+                }
+            )
         }
         
         // Aquí agregaremos el resto de rutas (Inicio, Gastos, etc.) más adelante
