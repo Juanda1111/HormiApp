@@ -5,6 +5,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.hormi.hormiapp.ui.auth.RegistroScreen
 import com.hormi.hormiapp.ui.splash.SplashScreen
 
 @Composable
@@ -18,7 +19,7 @@ fun HormiAppNavigation(
         composable(route = Screen.Splash.route) {
             SplashScreen(
                 onSplashFinished = {
-                    navController.navigate(Screen.Login.route) {
+                    navController.navigate(Screen.Registro.route) {
                         popUpTo(Screen.Splash.route) { inclusive = true }
                     }
                 }
@@ -28,7 +29,13 @@ fun HormiAppNavigation(
             // Login Screen goes here
         }
         composable(route = Screen.Registro.route) {
-            // Registro Screen goes here
+            RegistroScreen(
+                onRegisterSuccess = {
+                    navController.navigate(Screen.Onboarding.route) {
+                        popUpTo(Screen.Registro.route) { inclusive = true }
+                    }
+                }
+            )
         }
         composable(route = Screen.Onboarding.route) {
             // Onboarding Screen goes here
