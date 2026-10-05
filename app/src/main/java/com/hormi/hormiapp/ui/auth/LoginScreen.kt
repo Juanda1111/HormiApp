@@ -22,6 +22,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.hormi.hormiapp.ui.components.HormiAppHeader
 import com.hormi.hormiapp.ui.theme.PrimaryGreen
 
@@ -30,11 +31,10 @@ import com.hormi.hormiapp.ui.theme.PrimaryGreen
 fun LoginScreen(
     onLoginSuccess: () -> Unit,
     onForgotPasswordClick: () -> Unit,
-    onNavigateToRegister: () -> Unit
+    onNavigateToRegister: () -> Unit,
+    viewModel: LoginViewModel = hiltViewModel()
 ) {
-    var nombre by remember { mutableStateOf("") }
-    var pin by remember { mutableStateOf("") }
-    var pinVisible by remember { mutableStateOf(false) }
+    val uiState by viewModel.uiState.collectAsState()
 
     Column(
         modifier = Modifier
@@ -64,7 +64,7 @@ fun LoginScreen(
         )
         Spacer(modifier = Modifier.height(8.dp))
         Text(
-            text = "Ingresa con tu nombre y tu PIN",
+            text = "Ingresa con tu PIN",
             fontSize = 12.sp,
             color = Color.Gray,
             modifier = Modifier.fillMaxWidth(),
@@ -73,13 +73,25 @@ fun LoginScreen(
 
         Spacer(modifier = Modifier.height(32.dp))
 
-        // Nombre
+        // Mostrar Error si lo hay
+        if (uiState.error != null) {
+            Text(
+                text = uiState.error!!,
+                color = Color.Red,
+                fontSize = 14.sp,
+                modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp),
+                textAlign = TextAlign.Center
+            )
+        }
+
+        // Nombre (Solo lectura, cargado desde DataStore)
         Text(text = "Nombre", fontSize = 12.sp, color = Color.DarkGray)
         Spacer(modifier = Modifier.height(4.dp))
         OutlinedTextField(
-            value = nombre,
-            onValueChange = { nombre = it },
-            placeholder = { Text("Sebastián", color = Color.LightGray) },
+            value = uiState.nombre,
+            onValueChange = {},
+            readOnly = true, // El usuario no debería cambiar su nombre aquí
+            placeholder = { Text("Tu nombre", color = Color.LightGray) },
             modifier = Modifier.fillMaxWidth(),
             singleLine = true,
             shape = RoundedCornerShape(12.dp),
@@ -99,18 +111,18 @@ fun LoginScreen(
         Text(text = "PIN (4 dígitos)", fontSize = 12.sp, color = Color.DarkGray)
         Spacer(modifier = Modifier.height(4.dp))
         OutlinedTextField(
-            value = pin,
-            onValueChange = { if (it.length <= 4) pin = it },
+            value = uiState.pin,
+            onValueChange = viewModel::onPinChange,
             placeholder = { Text("• • • •", color = Color.LightGray) },
             modifier = Modifier.fillMaxWidth(),
             singleLine = true,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword),
-            visualTransformation = if (pinVisible) VisualTransformation.None else PasswordVisualTransformation(),
+            visualTransformation = if (uiState.pinVisible) VisualTransformation.None else PasswordVisualTransformation(),
             shape = RoundedCornerShape(12.dp),
             trailingIcon = {
-                IconButton(onClick = { pinVisible = !pinVisible }) {
+                IconButton(onClick = viewModel::togglePinVisibility) {
                     Icon(
-                        imageVector = if (pinVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
+                        imageVector = if (uiState.pinVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
                         contentDescription = "Toggle PIN visibility",
                         tint = Color.Gray
                     )
@@ -146,8 +158,7 @@ fun LoginScreen(
         // Botón Ingresar
         Button(
             onClick = {
-                // TODO: Validar en ViewModel
-                onLoginSuccess()
+                viewModel.onLoginClick(onSuccess = onLoginSuccess)
             },
             modifier = Modifier
                 .fillMaxWidth()

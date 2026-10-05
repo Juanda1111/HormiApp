@@ -19,3 +19,11 @@ class GetUserPinUseCase @Inject constructor(
         return repository.userPin
     }
 }
+
+class GetUserNameUseCase @Inject constructor(
+    private val repository: UserPreferencesRepository
+) {
+    operator fun invoke(): Flow<String?> {
+        return repository.userName
+    }
+}
