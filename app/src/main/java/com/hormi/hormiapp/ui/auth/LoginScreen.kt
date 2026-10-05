@@ -44,8 +44,6 @@ fun LoginScreen(
             .padding(horizontal = 16.dp)
             .verticalScroll(rememberScrollState())
     ) {
-        Spacer(modifier = Modifier.height(16.dp))
-
         // Top Bar
         HormiAppHeader(
             title = "Iniciar sesión"

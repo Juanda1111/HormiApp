@@ -52,8 +52,6 @@ fun InicioScreen(
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)
             )
 
-            HorizontalDivider(color = Color.LightGray.copy(alpha = 0.3f), thickness = 1.dp)
-
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()

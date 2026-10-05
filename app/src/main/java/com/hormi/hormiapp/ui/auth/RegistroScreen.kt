@@ -43,8 +43,6 @@ fun RegistroScreen(
             .padding(horizontal = 16.dp)
             .verticalScroll(rememberScrollState()) // <- ESTO PERMITE SCROLL SI EL TECLADO TAPA
     ) {
-        Spacer(modifier = Modifier.height(16.dp))
-
         // Top Bar
         HormiAppHeader(
             title = "Crear cuenta",

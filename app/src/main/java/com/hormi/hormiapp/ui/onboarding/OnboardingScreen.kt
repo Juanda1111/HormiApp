@@ -45,8 +45,6 @@ fun OnboardingScreen(
             .padding(horizontal = 16.dp)
             .verticalScroll(rememberScrollState())
     ) {
-        Spacer(modifier = Modifier.height(16.dp))
-
         // Header
         HormiAppHeader(
             title = "Bienvenida",
