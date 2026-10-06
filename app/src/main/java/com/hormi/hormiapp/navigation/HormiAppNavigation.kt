@@ -106,7 +106,13 @@ fun HormiAppNavigation(
                 AnalisisScreen()
             }
             composable(route = Screen.Perfil.route) {
-                PerfilScreen()
+                PerfilScreen(
+                    onLogoutClick = {
+                        navController.navigate(Screen.Login.route) {
+                            popUpTo(0) { inclusive = true }
+                        }
+                    }
+                )
             }
         }
     }
