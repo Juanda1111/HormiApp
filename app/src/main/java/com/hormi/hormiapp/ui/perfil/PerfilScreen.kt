@@ -40,6 +40,7 @@ fun PerfilScreen(
     modifier: Modifier = Modifier,
     onLogoutClick: () -> Unit = {},
     onNavigateToAddExpense: () -> Unit = {},
+    onNavigateToIngresos: () -> Unit = {},
     viewModel: PerfilViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -133,7 +134,8 @@ fun PerfilScreen(
                         Column {
                             MenuItem(
                                 icon = Icons.Default.Payments,
-                                text = "Ingresos"
+                                text = "Ingresos",
+                                onClick = onNavigateToIngresos
                             )
                             HorizontalDivider(color = Color.LightGray.copy(alpha = 0.2f))
                             MenuItem(

@@ -100,6 +100,9 @@ fun HormiAppNavigation(
                 InicioScreen(
                     onNavigateToAddExpense = {
                         navController.navigate(Screen.RegistrarGasto.route)
+                    },
+                    onNavigateToIngresos = {
+                        navController.navigate(Screen.Ingresos.route)
                     }
                 )
             }
@@ -126,11 +129,25 @@ fun HormiAppNavigation(
                     },
                     onNavigateToAddExpense = {
                         navController.navigate(Screen.RegistrarGasto.route)
+                    },
+                    onNavigateToIngresos = {
+                        navController.navigate(Screen.Ingresos.route)
                     }
                 )
             }
             
             // --- Additional Flows ---
+            composable(route = Screen.Ingresos.route) {
+                com.hormi.hormiapp.ui.ingresos.IngresosScreen(
+                    onBackClick = {
+                        navController.popBackStack()
+                    },
+                    onAddExtraIncomeClick = {
+                        // TODO: Abrir modal o pantalla de ingreso extra
+                    }
+                )
+            }
+            
             composable(route = Screen.RegistrarGasto.route) {
                 com.hormi.hormiapp.ui.add_expense.AddExpenseScreen(
                     onBackClick = {
