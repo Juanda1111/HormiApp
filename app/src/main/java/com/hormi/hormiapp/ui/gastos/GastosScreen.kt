@@ -38,6 +38,7 @@ import java.util.Locale
 @Composable
 fun GastosScreen(
     modifier: Modifier = Modifier,
+    onNavigateToAddExpense: () -> Unit = {},
     viewModel: GastosViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -269,7 +270,7 @@ fun GastosScreen(
 
         // FAB
         FloatingActionButton(
-            onClick = { /* TODO: Nueva transacción */ },
+            onClick = onNavigateToAddExpense,
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .padding(24.dp),

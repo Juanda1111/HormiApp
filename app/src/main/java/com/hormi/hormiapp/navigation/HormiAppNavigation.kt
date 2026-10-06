@@ -97,13 +97,25 @@ fun HormiAppNavigation(
             
             // --- Bottom Navigation Screens ---
             composable(route = Screen.Inicio.route) {
-                InicioScreen()
+                InicioScreen(
+                    onNavigateToAddExpense = {
+                        navController.navigate(Screen.RegistrarGasto.route)
+                    }
+                )
             }
             composable(route = Screen.Gastos.route) {
-                GastosScreen()
+                GastosScreen(
+                    onNavigateToAddExpense = {
+                        navController.navigate(Screen.RegistrarGasto.route)
+                    }
+                )
             }
             composable(route = Screen.Analisis.route) {
-                AnalisisScreen()
+                AnalisisScreen(
+                    onNavigateToAddExpense = {
+                        navController.navigate(Screen.RegistrarGasto.route)
+                    }
+                )
             }
             composable(route = Screen.Perfil.route) {
                 PerfilScreen(
@@ -111,6 +123,21 @@ fun HormiAppNavigation(
                         navController.navigate(Screen.Login.route) {
                             popUpTo(0) { inclusive = true }
                         }
+                    },
+                    onNavigateToAddExpense = {
+                        navController.navigate(Screen.RegistrarGasto.route)
+                    }
+                )
+            }
+            
+            // --- Additional Flows ---
+            composable(route = Screen.RegistrarGasto.route) {
+                com.hormi.hormiapp.ui.add_expense.AddExpenseScreen(
+                    onBackClick = {
+                        navController.popBackStack()
+                    },
+                    onExpenseSaved = {
+                        navController.popBackStack()
                     }
                 )
             }

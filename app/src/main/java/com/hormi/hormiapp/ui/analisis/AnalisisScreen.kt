@@ -39,6 +39,7 @@ import java.util.Locale
 @Composable
 fun AnalisisScreen(
     modifier: Modifier = Modifier,
+    onNavigateToAddExpense: () -> Unit = {},
     viewModel: AnalisisViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -342,7 +343,7 @@ fun AnalisisScreen(
 
         // FAB
         FloatingActionButton(
-            onClick = { /* TODO: Nueva transacción */ },
+            onClick = onNavigateToAddExpense,
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .padding(24.dp),

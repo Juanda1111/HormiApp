@@ -39,6 +39,7 @@ import java.util.Locale
 fun PerfilScreen(
     modifier: Modifier = Modifier,
     onLogoutClick: () -> Unit = {},
+    onNavigateToAddExpense: () -> Unit = {},
     viewModel: PerfilViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -205,7 +206,7 @@ fun PerfilScreen(
 
         // FAB
         FloatingActionButton(
-            onClick = { /* TODO: Nueva transacción */ },
+            onClick = onNavigateToAddExpense,
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .padding(24.dp),
