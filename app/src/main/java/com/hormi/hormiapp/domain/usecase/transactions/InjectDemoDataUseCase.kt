@@ -12,54 +12,27 @@ class InjectDemoDataUseCase @Inject constructor(
         val oneDay = 86400000L
 
         val demoTransactions = listOf(
-            TransactionEntity(
-                amount = 2500.0,
-                type = "EXPENSE",
-                category = "Hormiga",
-                description = "Tinto de la mañana",
-                dateTimestamp = now - (oneDay * 0), // Hoy
-                isAntExpense = true
-            ),
-            TransactionEntity(
-                amount = 12000.0,
-                type = "EXPENSE",
-                category = "Alimentación",
-                description = "Almuerzo casero",
-                dateTimestamp = now - (oneDay * 0), // Hoy
-                isAntExpense = false
-            ),
-            TransactionEntity(
-                amount = 5000.0,
-                type = "EXPENSE",
-                category = "Hormiga",
-                description = "Snacks en la tarde",
-                dateTimestamp = now - (oneDay * 1), // Ayer
-                isAntExpense = true
-            ),
-            TransactionEntity(
-                amount = 45000.0,
-                type = "EXPENSE",
-                category = "Entretenimiento",
-                description = "Cine con amigos",
-                dateTimestamp = now - (oneDay * 2), // Hace 2 días
-                isAntExpense = false
-            ),
-            TransactionEntity(
-                amount = 3500.0,
-                type = "EXPENSE",
-                category = "Hormiga",
-                description = "Golosina",
-                dateTimestamp = now - (oneDay * 3), // Hace 3 días
-                isAntExpense = true
-            ),
-            TransactionEntity(
-                amount = 50000.0,
-                type = "INCOME",
-                category = "Regalo",
-                description = "Dinero de cumpleaños",
-                dateTimestamp = now - (oneDay * 4), // Hace 4 días
-                isAntExpense = false
-            )
+            // Café y snacks (Total 21500 en 6 gastos)
+            TransactionEntity(amount = 2500.0, type = "EXPENSE", category = "Café y snacks", description = "Tinto antes de clase", dateTimestamp = now - (oneDay * 0), isAntExpense = true),
+            TransactionEntity(amount = 4000.0, type = "EXPENSE", category = "Café y snacks", description = "Snack en la tarde", dateTimestamp = now - (oneDay * 0), isAntExpense = true),
+            TransactionEntity(amount = 3000.0, type = "EXPENSE", category = "Café y snacks", description = "Café de máquina", dateTimestamp = now - (oneDay * 1), isAntExpense = true),
+            TransactionEntity(amount = 5000.0, type = "EXPENSE", category = "Café y snacks", description = "Empanada y gaseosa", dateTimestamp = now - (oneDay * 2), isAntExpense = true),
+            TransactionEntity(amount = 4500.0, type = "EXPENSE", category = "Café y snacks", description = "Galletas", dateTimestamp = now - (oneDay * 3), isAntExpense = true),
+            TransactionEntity(amount = 2500.0, type = "EXPENSE", category = "Café y snacks", description = "Tinto", dateTimestamp = now - (oneDay * 4), isAntExpense = true),
+            
+            // Transporte (Total 6400 en 2 gastos)
+            TransactionEntity(amount = 3200.0, type = "EXPENSE", category = "Transporte", description = "Pasaje bus extra", dateTimestamp = now - (oneDay * 1), isAntExpense = true),
+            TransactionEntity(amount = 3200.0, type = "EXPENSE", category = "Transporte", description = "Pasaje de afán", dateTimestamp = now - (oneDay * 2), isAntExpense = true),
+            
+            // Domicilios (Total 3900 en 1 gasto)
+            TransactionEntity(amount = 3900.0, type = "EXPENSE", category = "Domicilios", description = "Costo de envío", dateTimestamp = now - (oneDay * 3), isAntExpense = true),
+            
+            // Gastos no hormiga para bulto
+            TransactionEntity(amount = 45000.0, type = "EXPENSE", category = "Salidas", description = "Cine con amigos", dateTimestamp = now - (oneDay * 1), isAntExpense = false),
+            TransactionEntity(amount = 12000.0, type = "EXPENSE", category = "Alimentación", description = "Almuerzo", dateTimestamp = now - (oneDay * 0), isAntExpense = false),
+            
+            // Ingreso extra
+            TransactionEntity(amount = 50000.0, type = "INCOME", category = "Transferencia", description = "Pago deuda", dateTimestamp = now - (oneDay * 2), isAntExpense = false)
         )
 
         demoTransactions.forEach { transaction ->
