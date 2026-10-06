@@ -103,6 +103,12 @@ fun HormiAppNavigation(
                     },
                     onNavigateToIngresos = {
                         navController.navigate(Screen.Ingresos.route)
+                    },
+                    onNavigateToGastos = {
+                        navController.navigate(Screen.Gastos.route)
+                    },
+                    onNavigateToDetalleGasto = { gastoId ->
+                        navController.navigate(Screen.DetalleGasto.createRoute(gastoId))
                     }
                 )
             }
@@ -110,6 +116,9 @@ fun HormiAppNavigation(
                 GastosScreen(
                     onNavigateToAddExpense = {
                         navController.navigate(Screen.RegistrarGasto.route)
+                    },
+                    onNavigateToDetalleGasto = { gastoId ->
+                        navController.navigate(Screen.DetalleGasto.createRoute(gastoId))
                     }
                 )
             }
@@ -155,6 +164,19 @@ fun HormiAppNavigation(
                     },
                     onExpenseSaved = {
                         navController.popBackStack()
+                    }
+                )
+            }
+            composable(
+                route = Screen.DetalleGasto.route,
+                arguments = listOf(androidx.navigation.navArgument("gastoId") { type = androidx.navigation.NavType.IntType })
+            ) { backStackEntry ->
+                com.hormi.hormiapp.ui.detalle_gasto.DetalleGastoScreen(
+                    onBackClick = {
+                        navController.popBackStack()
+                    },
+                    onEditClick = { id ->
+                        // TODO: Navigate to Edit Expense Screen
                     }
                 )
             }

@@ -3,6 +3,7 @@ package com.hormi.hormiapp.ui.gastos
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -39,6 +40,7 @@ import java.util.Locale
 fun GastosScreen(
     modifier: Modifier = Modifier,
     onNavigateToAddExpense: () -> Unit = {},
+    onNavigateToDetalleGasto: (Int) -> Unit = {},
     viewModel: GastosViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -183,7 +185,8 @@ fun GastosScreen(
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(bottom = 16.dp),
+                                .clickable { onNavigateToDetalleGasto(transaction.id) }
+                                .padding(vertical = 8.dp),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             // Icono según categoría

@@ -37,6 +37,8 @@ fun InicioScreen(
     modifier: Modifier = Modifier,
     onNavigateToAddExpense: () -> Unit = {},
     onNavigateToIngresos: () -> Unit = {},
+    onNavigateToDetalleGasto: (Int) -> Unit = {},
+    onNavigateToGastos: () -> Unit = {},
     viewModel: InicioViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -310,7 +312,7 @@ fun InicioScreen(
                             color = PrimaryGreen,
                             fontWeight = FontWeight.Bold,
                             fontSize = 14.sp,
-                            modifier = Modifier.clickable { }
+                            modifier = Modifier.clickable { onNavigateToGastos() }
                         )
                     }
                     Spacer(modifier = Modifier.height(16.dp))
@@ -321,6 +323,7 @@ fun InicioScreen(
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
+                            .clickable { onNavigateToDetalleGasto(transaction.id) }
                             .padding(vertical = 8.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
