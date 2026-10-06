@@ -36,6 +36,7 @@ import java.util.Locale
 fun InicioScreen(
     modifier: Modifier = Modifier,
     onNavigateToAddExpense: () -> Unit = {},
+    onNavigateToIngresos: () -> Unit = {},
     viewModel: InicioViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -232,7 +233,7 @@ fun InicioScreen(
                         Card(
                             modifier = Modifier
                                 .weight(1f)
-                                .clickable { },
+                                .clickable { onNavigateToIngresos() },
                             shape = RoundedCornerShape(12.dp),
                             colors = CardDefaults.cardColors(containerColor = Color.White),
                             border = BorderStroke(1.dp, Color.LightGray.copy(alpha = 0.3f))
