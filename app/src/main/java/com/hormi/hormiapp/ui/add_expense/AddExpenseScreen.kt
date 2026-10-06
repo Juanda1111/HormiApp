@@ -65,11 +65,38 @@ fun AddExpenseScreen(
         "Suscripciones", "Salidas", "Universidad", "Otros"
     )
 
+    // Estado para el DatePicker
+    var showDatePicker by remember { mutableStateOf(false) }
+    val datePickerState = rememberDatePickerState(initialSelectedDateMillis = uiState.dateTimestamp)
+
+    if (showDatePicker) {
+        DatePickerDialog(
+            onDismissRequest = { showDatePicker = false },
+            confirmButton = {
+                TextButton(onClick = {
+                    datePickerState.selectedDateMillis?.let {
+                        viewModel.updateDate(it)
+                    }
+                    showDatePicker = false
+                }) {
+                    Text("Aceptar", color = PrimaryGreen)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDatePicker = false }) {
+                    Text("Cancelar", color = Color.Gray)
+                }
+            }
+        ) {
+            DatePicker(state = datePickerState)
+        }
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(backgroundColor)
-            .systemBarsPadding()
+            // Se elimina .systemBarsPadding() para evitar que baje el header extra, ya que Scaffold lo provee
     ) {
         HormiAppHeader(
             title = "Registrar gasto",
@@ -130,7 +157,9 @@ fun AddExpenseScreen(
                         focusedContainerColor = Color.White,
                         unfocusedContainerColor = Color.White,
                         focusedBorderColor = PrimaryGreen,
-                        unfocusedBorderColor = Color.LightGray
+                        unfocusedBorderColor = Color.LightGray,
+                        focusedTextColor = Color.Black,
+                        unfocusedTextColor = Color.Black
                     ),
                     textStyle = androidx.compose.ui.text.TextStyle(
                         fontSize = 28.sp,
@@ -216,31 +245,35 @@ fun AddExpenseScreen(
 
             // Fecha
             item {
-                OutlinedTextField(
-                    value = SimpleDateFormat("d MMM yyyy", Locale("es", "ES")).format(Date(uiState.dateTimestamp)),
-                    onValueChange = {},
-                    readOnly = true,
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(12.dp),
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedContainerColor = Color.White,
-                        unfocusedContainerColor = Color.White,
-                        disabledContainerColor = Color.White,
-                        focusedBorderColor = Color.LightGray,
-                        unfocusedBorderColor = Color.LightGray
-                    ),
-                    leadingIcon = {
-                        Icon(imageVector = Icons.Default.CalendarToday, contentDescription = null, tint = PrimaryGreen)
-                    },
-                    prefix = {
-                        Text("Fecha", color = Color.Gray, modifier = Modifier.padding(end = 16.dp))
-                    },
-                    textStyle = androidx.compose.ui.text.TextStyle(
-                        color = Color.Black,
-                        fontWeight = FontWeight.Bold,
-                        textAlign = androidx.compose.ui.text.style.TextAlign.End
-                    )
-                )
+                // Caja clicleable para abrir el DatePicker
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(Color.White)
+                        .border(1.dp, Color.LightGray, RoundedCornerShape(12.dp))
+                        .clickable { showDatePicker = true }
+                        .padding(horizontal = 16.dp, vertical = 16.dp),
+                    contentAlignment = Alignment.CenterStart
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Icon(imageVector = Icons.Default.CalendarToday, contentDescription = null, tint = PrimaryGreen)
+                            Spacer(modifier = Modifier.width(16.dp))
+                            Text("Fecha", color = Color.Gray, fontSize = 16.sp)
+                        }
+                        Text(
+                            text = SimpleDateFormat("d MMM yyyy", Locale("es", "ES")).format(Date(uiState.dateTimestamp)),
+                            color = Color.Black,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 16.sp
+                        )
+                    }
+                }
                 Spacer(modifier = Modifier.height(24.dp))
             }
 
@@ -293,7 +326,9 @@ fun AddExpenseScreen(
                         focusedContainerColor = Color.White,
                         unfocusedContainerColor = Color.White,
                         focusedBorderColor = PrimaryGreen,
-                        unfocusedBorderColor = Color.LightGray
+                        unfocusedBorderColor = Color.LightGray,
+                        focusedTextColor = Color.Black,
+                        unfocusedTextColor = Color.Black
                     )
                 )
                 Spacer(modifier = Modifier.height(32.dp))

@@ -38,11 +38,23 @@ class AddExpenseViewModel @Inject constructor(
     fun updateAmount(newAmount: String) {
         // Filtrar solo números
         val filtered = newAmount.filter { it.isDigit() }
-        _uiState.value = _uiState.value.copy(amount = filtered)
+        val amountValue = filtered.toDoubleOrNull() ?: 0.0
+        
+        // Auto-clasificar como gasto hormiga si es pequeño (ej. <= 15000)
+        val isAutoHormiga = amountValue > 0 && amountValue <= 15000
+        
+        _uiState.value = _uiState.value.copy(
+            amount = filtered,
+            isImpulsive = if (isAutoHormiga) true else _uiState.value.isImpulsive
+        )
     }
 
     fun updateCategory(newCategory: String) {
         _uiState.value = _uiState.value.copy(category = newCategory)
+    }
+
+    fun updateDate(newTimestamp: Long) {
+        _uiState.value = _uiState.value.copy(dateTimestamp = newTimestamp)
     }
 
     fun updateNote(newNote: String) {
