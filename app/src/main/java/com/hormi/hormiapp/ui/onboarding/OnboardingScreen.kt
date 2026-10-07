@@ -41,7 +41,6 @@ fun OnboardingScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(Color(0xFFFAFAFA)) // Color de fondo del figma, casi blanco
-            .systemBarsPadding()
             .padding(horizontal = 16.dp)
             .verticalScroll(rememberScrollState())
     ) {

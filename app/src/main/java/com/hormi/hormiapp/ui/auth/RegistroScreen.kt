@@ -39,7 +39,6 @@ fun RegistroScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.White)
-            .systemBarsPadding() // <- ESTO EVITA QUE LA UI PISE LOS BOTONES DEL SISTEMA
             .padding(horizontal = 16.dp)
             .verticalScroll(rememberScrollState()) // <- ESTO PERMITE SCROLL SI EL TECLADO TAPA
     ) {

@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Lock
@@ -58,8 +57,7 @@ fun SplashScreen(
     Box(
         modifier = modifier
             .fillMaxSize()
-            .background(PrimaryGreen)
-            .systemBarsPadding(), // <- Evita solapamiento con botones del sistema
+            .background(PrimaryGreen),
         contentAlignment = Alignment.Center
     ) {
         // Contenido central (Logo y textos)
