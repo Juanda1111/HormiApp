@@ -2,13 +2,21 @@ package com.hormi.hormiapp.data.preferences
 
 import android.content.Context
 import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.MutablePreferences
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
+import androidx.datastore.preferences.core.doublePreferencesKey
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import com.hormi.hormiapp.reminder.ReminderScheduler
+import com.hormi.hormiapp.util.AccountId
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -16,106 +24,168 @@ import javax.inject.Singleton
 // Extensión para inicializar DataStore
 val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "hormiapp_prefs")
 
+enum class LoginResult { OK, NOT_FOUND, WRONG_PIN }
+
+/**
+ * Ajustes del dispositivo y de cada cuenta.
+ *
+ * Un mismo celular puede tener varias cuentas. Cada cuenta guarda sus ajustes con el prefijo
+ * "u:<id>:" y [CURRENT_USER] indica la cuenta activa (la última que inició sesión). Todos los
+ * valores públicos (userName, currency, theme...) se refieren siempre a la cuenta activa.
+ */
 @Singleton
 class UserPreferencesRepository @Inject constructor(
     @ApplicationContext private val context: Context
 ) {
-    private object PreferencesKeys {
-        val USER_NAME = stringPreferencesKey("user_name")
-        val USER_PIN = stringPreferencesKey("user_pin")
-        val SECURITY_ANSWER = stringPreferencesKey("security_answer")
-        val HAS_COMPLETED_ONBOARDING = booleanPreferencesKey("has_completed_onboarding")
-        val MONTHLY_INCOME = stringPreferencesKey("monthly_income")
-        val REGISTERED_AT = androidx.datastore.preferences.core.longPreferencesKey("registered_at")
-        val CURRENCY = stringPreferencesKey("currency")
-        val REMINDER_ENABLED = booleanPreferencesKey("reminder_enabled")
-        val REMINDER_TIME = stringPreferencesKey("reminder_time")
-        val THEME = stringPreferencesKey("theme")
-        val ANT_EXPENSE_THRESHOLD = androidx.datastore.preferences.core.doublePreferencesKey("ant_expense_threshold")
+    private companion object {
+        val ACCOUNTS = stringSetPreferencesKey("accounts")
+        val CURRENT_USER = stringPreferencesKey("current_user")
+
+        const val NAME = "user_name"
+        const val PIN = "user_pin"
+        const val ANSWER = "security_answer"
+        const val ONBOARDING = "has_completed_onboarding"
+        const val INCOME = "monthly_income"
+        const val REGISTERED_AT = "registered_at"
+        const val CURRENCY = "currency"
+        const val REMINDER_ENABLED = "reminder_enabled"
+        const val REMINDER_TIME = "reminder_time"
+        const val THEME = "theme"
+        const val THRESHOLD = "ant_expense_threshold"
+
+        fun prefix(id: String) = "u:$id:"
+        fun str(id: String, field: String) = stringPreferencesKey(prefix(id) + field)
+        fun bool(id: String, field: String) = booleanPreferencesKey(prefix(id) + field)
+        fun lng(id: String, field: String) = longPreferencesKey(prefix(id) + field)
+        fun dbl(id: String, field: String) = doublePreferencesKey(prefix(id) + field)
     }
 
-    val userName: Flow<String?> = context.dataStore.data.map { it[PreferencesKeys.USER_NAME] }
+    private val data get() = context.dataStore.data
 
-    val userPin: Flow<String?> = context.dataStore.data.map { it[PreferencesKeys.USER_PIN] }
+    /** Id de la cuenta activa, o null si todavía no hay ninguna. */
+    val currentUserId: Flow<String?> = data.map { it[CURRENT_USER] }.distinctUntilChanged()
 
-    val securityAnswer: Flow<String?> = context.dataStore.data.map { it[PreferencesKeys.SECURITY_ANSWER] }
+    private fun <T> perUser(default: T, read: (Preferences, String) -> T?): Flow<T> =
+        data.map { p -> p[CURRENT_USER]?.let { id -> read(p, id) } ?: default }.distinctUntilChanged()
 
-    val hasCompletedOnboarding: Flow<Boolean> = context.dataStore.data.map { preferences ->
-        preferences[PreferencesKeys.HAS_COMPLETED_ONBOARDING] ?: false
+    val userName: Flow<String?> = perUser<String?>(null) { p, id -> p[str(id, NAME)] }
+
+    val userPin: Flow<String?> = perUser<String?>(null) { p, id -> p[str(id, PIN)] }
+
+    val securityAnswer: Flow<String?> = perUser<String?>(null) { p, id -> p[str(id, ANSWER)] }
+
+    val hasCompletedOnboarding: Flow<Boolean> = perUser(false) { p, id -> p[bool(id, ONBOARDING)] }
+
+    val monthlyIncome: Flow<String?> = perUser<String?>(null) { p, id -> p[str(id, INCOME)] }
+
+    val antExpenseThreshold: Flow<Double> = perUser(15000.0) { p, id -> p[dbl(id, THRESHOLD)] }
+
+    /** Momento en que se creó la cuenta (millis), o null si no se guardó. */
+    val registeredAt: Flow<Long?> = perUser<Long?>(null) { p, id -> p[lng(id, REGISTERED_AT)] }
+
+    val currency: Flow<String> = perUser("COP $") { p, id -> p[str(id, CURRENCY)] }
+
+    val reminderEnabled: Flow<Boolean> = perUser(false) { p, id -> p[bool(id, REMINDER_ENABLED)] }
+
+    val reminderTime: Flow<String> = perUser("20:00") { p, id -> p[str(id, REMINDER_TIME)] }
+
+    val theme: Flow<String> = perUser("Sistema") { p, id -> p[str(id, THEME)] }
+
+    // ---------------- Cuentas ----------------
+
+    suspend fun hasAccounts(): Boolean = data.first()[ACCOUNTS].orEmpty().isNotEmpty()
+
+    suspend fun accountExists(name: String): Boolean =
+        AccountId.normalize(name) in data.first()[ACCOUNTS].orEmpty()
+
+    /** Crea la cuenta y la deja como cuenta activa. No toca las demás cuentas. */
+    suspend fun createAccount(name: String, pin: String, answer: String) {
+        val id = AccountId.normalize(name)
+        context.dataStore.edit { p ->
+            p[ACCOUNTS] = p[ACCOUNTS].orEmpty() + id
+            p[str(id, NAME)] = name.trim().replace(Regex("\\s+"), " ")
+            p[str(id, PIN)] = pin
+            p[str(id, ANSWER)] = answer
+            p[lng(id, REGISTERED_AT)] = System.currentTimeMillis()
+            p[CURRENT_USER] = id
+        }
+        applyReminder()
     }
 
-    val monthlyIncome: Flow<String?> = context.dataStore.data.map { it[PreferencesKeys.MONTHLY_INCOME] }
-
-    val antExpenseThreshold: Flow<Double> = context.dataStore.data.map { preferences ->
-        preferences[PreferencesKeys.ANT_EXPENSE_THRESHOLD] ?: 15000.0
+    /** Valida nombre y PIN; si son correctos, la cuenta pasa a ser la activa. */
+    suspend fun login(name: String, pin: String): LoginResult {
+        val id = AccountId.normalize(name)
+        var result = LoginResult.NOT_FOUND
+        context.dataStore.edit { p ->
+            if (id in p[ACCOUNTS].orEmpty()) {
+                if (p[str(id, PIN)] == pin) {
+                    p[CURRENT_USER] = id
+                    result = LoginResult.OK
+                } else {
+                    result = LoginResult.WRONG_PIN
+                }
+            }
+        }
+        if (result == LoginResult.OK) applyReminder()
+        return result
     }
 
-    /** Momento en que se creó la cuenta (millis), o null en cuentas creadas antes de guardar este dato. */
-    val registeredAt: Flow<Long?> = context.dataStore.data.map { it[PreferencesKeys.REGISTERED_AT] }
+    suspend fun getSecurityAnswer(name: String): String? =
+        data.first()[str(AccountId.normalize(name), ANSWER)]
 
-    val currency: Flow<String> = context.dataStore.data.map { it[PreferencesKeys.CURRENCY] ?: "COP $" }
-
-    val reminderEnabled: Flow<Boolean> = context.dataStore.data.map { it[PreferencesKeys.REMINDER_ENABLED] ?: false }
-
-    val reminderTime: Flow<String> = context.dataStore.data.map { it[PreferencesKeys.REMINDER_TIME] ?: "20:00" }
-
-    val theme: Flow<String> = context.dataStore.data.map { it[PreferencesKeys.THEME] ?: "Sistema" }
-
-    suspend fun saveUserData(name: String, pin: String, answer: String) {
-        context.dataStore.edit { preferences ->
-            preferences[PreferencesKeys.USER_NAME] = name
-            preferences[PreferencesKeys.USER_PIN] = pin
-            preferences[PreferencesKeys.SECURITY_ANSWER] = answer
-            preferences[PreferencesKeys.REGISTERED_AT] = System.currentTimeMillis()
+    suspend fun resetPin(name: String, newPin: String) {
+        val id = AccountId.normalize(name)
+        context.dataStore.edit { p ->
+            if (id in p[ACCOUNTS].orEmpty()) p[str(id, PIN)] = newPin
         }
     }
 
-    suspend fun saveUserPinOnly(pin: String) {
-        context.dataStore.edit { preferences ->
-            preferences[PreferencesKeys.USER_PIN] = pin
+    /** Elimina los ajustes de una cuenta y la saca de la lista. Los datos en Room se borran aparte. */
+    suspend fun removeAccount(id: String) {
+        context.dataStore.edit { p ->
+            val prefix = prefix(id)
+            p.asMap().keys.filter { it.name.startsWith(prefix) }.forEach { p.remove(it) }
+            p[ACCOUNTS] = p[ACCOUNTS].orEmpty() - id
+            if (p[CURRENT_USER] == id) p.remove(CURRENT_USER)
         }
+        applyReminder()
     }
 
-    suspend fun setOnboardingCompleted(income: String) {
-        context.dataStore.edit { preferences ->
-            preferences[PreferencesKeys.HAS_COMPLETED_ONBOARDING] = true
-            preferences[PreferencesKeys.MONTHLY_INCOME] = income
-        }
+    // ---------------- Ajustes de la cuenta activa ----------------
+
+    private suspend fun editCurrent(block: (MutablePreferences, String) -> Unit) {
+        context.dataStore.edit { p -> p[CURRENT_USER]?.let { block(p, it) } }
     }
 
-    suspend fun updateAntExpenseThreshold(threshold: Double) {
-        context.dataStore.edit { preferences ->
-            preferences[PreferencesKeys.ANT_EXPENSE_THRESHOLD] = threshold
-        }
+    suspend fun setOnboardingCompleted(income: String) = editCurrent { p, id ->
+        p[bool(id, ONBOARDING)] = true
+        p[str(id, INCOME)] = income
     }
 
-    suspend fun saveMonthlyIncome(income: String) {
-        context.dataStore.edit { it[PreferencesKeys.MONTHLY_INCOME] = income }
+    suspend fun saveMonthlyIncome(income: String) = editCurrent { p, id -> p[str(id, INCOME)] = income }
+
+    suspend fun updateAntExpenseThreshold(threshold: Double) = editCurrent { p, id -> p[dbl(id, THRESHOLD)] = threshold }
+
+    suspend fun updateCurrency(currency: String) = editCurrent { p, id -> p[str(id, CURRENCY)] = currency }
+
+    suspend fun updateReminder(enabled: Boolean, time: String) = editCurrent { p, id ->
+        p[bool(id, REMINDER_ENABLED)] = enabled
+        p[str(id, REMINDER_TIME)] = time
     }
 
-    suspend fun updateCurrency(currency: String) {
-        context.dataStore.edit { it[PreferencesKeys.CURRENCY] = currency }
+    suspend fun updateTheme(theme: String) = editCurrent { p, id -> p[str(id, THEME)] = theme }
+
+    /** Para cuentas que no guardaron la fecha de creación: la fija la primera vez que se consulta. */
+    suspend fun ensureRegisteredAt() = editCurrent { p, id ->
+        if (p[lng(id, REGISTERED_AT)] == null) p[lng(id, REGISTERED_AT)] = System.currentTimeMillis()
     }
 
-    suspend fun updateReminder(enabled: Boolean, time: String) {
-        context.dataStore.edit {
-            it[PreferencesKeys.REMINDER_ENABLED] = enabled
-            it[PreferencesKeys.REMINDER_TIME] = time
-        }
-    }
-
-    suspend fun updateTheme(theme: String) {
-        context.dataStore.edit { it[PreferencesKeys.THEME] = theme }
-    }
-
-    suspend fun clearAll() {
-        context.dataStore.edit { it.clear() }
-    }
-
-    /** Para cuentas anteriores a este dato: fija la fecha la primera vez que se consulta. */
-    suspend fun ensureRegisteredAt() {
-        context.dataStore.edit {
-            if (it[PreferencesKeys.REGISTERED_AT] == null) it[PreferencesKeys.REGISTERED_AT] = System.currentTimeMillis()
-        }
+    /** El recordatorio es uno por dispositivo: refleja el ajuste de la cuenta activa. */
+    private suspend fun applyReminder() {
+        val p = data.first()
+        val id = p[CURRENT_USER]
+        val enabled = id?.let { p[bool(it, REMINDER_ENABLED)] } ?: false
+        val time = id?.let { p[str(it, REMINDER_TIME)] } ?: "20:00"
+        if (enabled) ReminderScheduler.schedule(context, time) else ReminderScheduler.cancel(context)
     }
 }

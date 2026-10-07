@@ -22,14 +22,17 @@ interface TransactionDao {
     fun deleteTransaction(transaction: TransactionEntity): Int
 
     // Obtener todas las transacciones ordenadas por fecha (más recientes primero)
-    @Query("SELECT * FROM transactions ORDER BY dateTimestamp DESC")
-    fun getAllTransactions(): Flow<List<TransactionEntity>>
+    @Query("SELECT * FROM transactions WHERE userId = :userId ORDER BY dateTimestamp DESC")
+    fun getAllTransactions(userId: String): Flow<List<TransactionEntity>>
 
     // Obtener transacciones por tipo (INCOME / EXPENSE)
-    @Query("SELECT * FROM transactions WHERE type = :type ORDER BY dateTimestamp DESC")
-    fun getTransactionsByType(type: String): Flow<List<TransactionEntity>>
+    @Query("SELECT * FROM transactions WHERE userId = :userId AND type = :type ORDER BY dateTimestamp DESC")
+    fun getTransactionsByType(userId: String, type: String): Flow<List<TransactionEntity>>
 
     // Sumar todos los gastos hormiga
-    @Query("SELECT SUM(amount) FROM transactions WHERE isAntExpense = 1")
-    fun getTotalAntExpenses(): Flow<Double?>
+    @Query("SELECT SUM(amount) FROM transactions WHERE userId = :userId AND isAntExpense = 1")
+    fun getTotalAntExpenses(userId: String): Flow<Double?>
+
+    @Query("DELETE FROM transactions WHERE userId = :userId")
+    fun deleteAllForUser(userId: String): Int
 }

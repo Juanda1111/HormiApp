@@ -82,13 +82,12 @@ fun LoginScreen(
             )
         }
 
-        // Nombre (Solo lectura, cargado desde DataStore)
+        // Nombre de usuario (se sugiere la última cuenta usada, pero se puede cambiar)
         Text(text = "Nombre", fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurface)
         Spacer(modifier = Modifier.height(4.dp))
         OutlinedTextField(
             value = uiState.nombre,
-            onValueChange = {},
-            readOnly = true, // El usuario no debería cambiar su nombre aquí
+            onValueChange = viewModel::onNombreChange,
             placeholder = { Text("Tu nombre", color = Color.LightGray) },
             modifier = Modifier.fillMaxWidth(),
             singleLine = true,

@@ -14,7 +14,7 @@ Proyecto de la **Entrega 3 – APP Nativa** del curso de Aplicaciones Móviles (
 
 ## Funcionalidades
 
-- **Registro e inicio de sesión local** con nombre, PIN y pregunta de seguridad; recuperación de PIN.
+- **Varias cuentas por celular:** cada usuario se registra con nombre, PIN y pregunta de seguridad, y entra escribiendo su nombre y PIN. Los gastos, ingresos, metas y ajustes de cada cuenta están separados. El nombre no distingue mayúsculas. Se puede recuperar el PIN con la respuesta de seguridad.
 - **Onboarding** con ingreso mensual.
 - **Inicio:** saldo, resumen de ingresos y gastos recientes.
 - **Gastos:** listado agrupado por categoría y detalle de cada gasto (con eliminación).
@@ -23,7 +23,7 @@ Proyecto de la **Entrega 3 – APP Nativa** del curso de Aplicaciones Móviles (
 - **Análisis:** total de gastos hormiga, comparación semanal, categorías principales y proyección.
 - **Metas de ahorro:** crear y seguir metas.
 - **Perfil, Configuración** (umbral de gasto hormiga) y **Créditos**.
-- **Usuario demo:** el botón «Probar con usuario demo» de Crear cuenta carga una cuenta de ejemplo (nombre Demo, PIN 1234) con gastos, ingresos y metas. Una cuenta nueva siempre empieza vacía.
+- **Usuario demo:** el botón «Probar con usuario demo» de Crear cuenta crea (o reinicia) la cuenta «Demo» (PIN 1234) con gastos, ingresos y metas de ejemplo, sin afectar a las demás cuentas. Una cuenta nueva siempre empieza vacía. El nombre «Demo» está reservado.
 
 ## Pantallas y navegación
 

@@ -9,7 +9,7 @@ import com.hormi.hormiapp.data.local.entity.TransactionEntity
 
 @Database(
     entities = [TransactionEntity::class, GoalEntity::class],
-    version = 2,
+    version = 3,
     exportSchema = false
 )
 abstract class HormiAppDatabase : RoomDatabase() {

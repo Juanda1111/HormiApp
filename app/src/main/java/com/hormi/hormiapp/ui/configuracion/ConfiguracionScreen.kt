@@ -402,8 +402,9 @@ private fun DeleteAllDataDialog(onDismiss: () -> Unit, onConfirm: () -> Unit) {
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 Text(
-                    "Se eliminarán de forma permanente tus gastos, ingresos, metas de ahorro, " +
-                        "tu cuenta (nombre y PIN) y todos los ajustes. No se puede deshacer."
+                    "Se eliminarán de forma permanente los gastos, ingresos, metas de ahorro, " +
+                        "la cuenta (nombre y PIN) y todos los ajustes de este usuario. " +
+                        "Las demás cuentas del celular no se tocan. No se puede deshacer."
                 )
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Checkbox(
