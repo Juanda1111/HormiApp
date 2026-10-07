@@ -41,6 +41,7 @@ fun PerfilScreen(
     onLogoutClick: () -> Unit = {},
     onNavigateToAddExpense: () -> Unit = {},
     onNavigateToIngresos: () -> Unit = {},
+    onNavigateToMetas: () -> Unit = {},
     viewModel: PerfilViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -140,7 +141,8 @@ fun PerfilScreen(
                             HorizontalDivider(color = Color.LightGray.copy(alpha = 0.2f))
                             MenuItem(
                                 icon = Icons.Default.Savings,
-                                text = "Metas de ahorro"
+                                text = "Metas de ahorro",
+                                onClick = onNavigateToMetas
                             )
                             HorizontalDivider(color = Color.LightGray.copy(alpha = 0.2f))
                             MenuItem(

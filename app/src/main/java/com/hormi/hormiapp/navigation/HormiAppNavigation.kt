@@ -109,6 +109,9 @@ fun HormiAppNavigation(
                     },
                     onNavigateToDetalleGasto = { gastoId ->
                         navController.navigate(Screen.DetalleGasto.createRoute(gastoId))
+                    },
+                    onNavigateToMetas = {
+                        navController.navigate(Screen.Metas.route)
                     }
                 )
             }
@@ -141,6 +144,9 @@ fun HormiAppNavigation(
                     },
                     onNavigateToIngresos = {
                         navController.navigate(Screen.Ingresos.route)
+                    },
+                    onNavigateToMetas = {
+                        navController.navigate(Screen.Metas.route)
                     }
                 )
             }
