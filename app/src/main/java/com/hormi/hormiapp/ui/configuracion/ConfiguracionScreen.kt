@@ -1,4 +1,4 @@
-package com.hormi.hormiapp.ui.configuracion
+﻿package com.hormi.hormiapp.ui.configuracion
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -29,6 +29,7 @@ import java.util.Locale
 @Composable
 fun ConfiguracionScreen(
     onBackClick: () -> Unit,
+    onLogoClick: () -> Unit = {},
     viewModel: ConfiguracionViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -44,6 +45,7 @@ fun ConfiguracionScreen(
         HormiAppHeader(
             title = "Configuración",
             onBackClick = onBackClick,
+            onLogoClick = onLogoClick,
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)
         )
 

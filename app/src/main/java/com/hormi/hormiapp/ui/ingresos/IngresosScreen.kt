@@ -1,4 +1,4 @@
-package com.hormi.hormiapp.ui.ingresos
+﻿package com.hormi.hormiapp.ui.ingresos
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -38,6 +38,7 @@ import java.util.Locale
 fun IngresosScreen(
     onBackClick: () -> Unit,
     onAddExtraIncomeClick: () -> Unit = {},
+    onLogoClick: () -> Unit = {},
     viewModel: IngresosViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -87,6 +88,7 @@ fun IngresosScreen(
             HormiAppHeader(
                 title = "Ingresos",
                 onBackClick = onBackClick,
+            onLogoClick = onLogoClick,
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)
             )
 

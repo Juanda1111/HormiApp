@@ -1,4 +1,4 @@
-package com.hormi.hormiapp.ui.add_expense
+﻿package com.hormi.hormiapp.ui.add_expense
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -39,6 +39,7 @@ import java.util.Locale
 fun AddExpenseScreen(
     onBackClick: () -> Unit,
     onExpenseSaved: () -> Unit,
+    onLogoClick: () -> Unit = {},
     viewModel: AddExpenseViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -101,6 +102,7 @@ fun AddExpenseScreen(
         HormiAppHeader(
             title = "Registrar gasto",
             onBackClick = onBackClick,
+            onLogoClick = onLogoClick,
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)
         )
 

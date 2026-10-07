@@ -1,4 +1,4 @@
-package com.hormi.hormiapp.ui.detalle_gasto
+﻿package com.hormi.hormiapp.ui.detalle_gasto
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -39,6 +39,7 @@ import java.util.Locale
 fun DetalleGastoScreen(
     onBackClick: () -> Unit,
     onEditClick: (Int) -> Unit = {},
+    onLogoClick: () -> Unit = {},
     viewModel: DetalleGastoViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -61,6 +62,7 @@ fun DetalleGastoScreen(
         HormiAppHeader(
             title = "Detalle del gasto",
             onBackClick = onBackClick,
+            onLogoClick = onLogoClick,
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)
         )
 

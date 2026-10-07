@@ -1,4 +1,4 @@
-package com.hormi.hormiapp.ui.perfil
+﻿package com.hormi.hormiapp.ui.perfil
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -44,6 +44,7 @@ fun PerfilScreen(
     onNavigateToMetas: () -> Unit = {},
     onNavigateToConfiguracion: () -> Unit = {},
     onNavigateToCreditos: () -> Unit = {},
+    onLogoClick: () -> Unit = {},
     viewModel: PerfilViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -58,6 +59,7 @@ fun PerfilScreen(
             HormiAppHeader(
                 title = "Perfil",
                 onBackClick = null,
+            onLogoClick = onLogoClick,
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)
             )
 

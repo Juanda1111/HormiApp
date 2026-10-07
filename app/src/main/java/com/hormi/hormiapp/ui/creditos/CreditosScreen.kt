@@ -1,4 +1,4 @@
-package com.hormi.hormiapp.ui.creditos
+﻿package com.hormi.hormiapp.ui.creditos
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -29,7 +29,8 @@ import com.hormi.hormiapp.ui.theme.PrimaryGreen
 
 @Composable
 fun CreditosScreen(
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    onLogoClick: () -> Unit = {}
 ) {
     val backgroundColor = Color(0xFFF9F6F0)
 
@@ -41,6 +42,7 @@ fun CreditosScreen(
         HormiAppHeader(
             title = "Créditos",
             onBackClick = onBackClick,
+            onLogoClick = onLogoClick,
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)
         )
 

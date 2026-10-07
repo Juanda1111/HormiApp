@@ -1,4 +1,4 @@
-package com.hormi.hormiapp.navigation
+﻿package com.hormi.hormiapp.navigation
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
@@ -117,6 +117,11 @@ fun HormiAppNavigation(
             }
             composable(route = Screen.Gastos.route) {
                 GastosScreen(
+                    onLogoClick = {
+                        navController.navigate(Screen.Inicio.route) {
+                            popUpTo(Screen.Inicio.route) { inclusive = false }
+                        }
+                    },
                     onNavigateToAddExpense = {
                         navController.navigate(Screen.RegistrarGasto.route)
                     },
@@ -127,6 +132,11 @@ fun HormiAppNavigation(
             }
             composable(route = Screen.Analisis.route) {
                 AnalisisScreen(
+                    onLogoClick = {
+                        navController.navigate(Screen.Inicio.route) {
+                            popUpTo(Screen.Inicio.route) { inclusive = false }
+                        }
+                    },
                     onNavigateToAddExpense = {
                         navController.navigate(Screen.RegistrarGasto.route)
                     }
@@ -134,6 +144,11 @@ fun HormiAppNavigation(
             }
             composable(route = Screen.Perfil.route) {
                 PerfilScreen(
+                    onLogoClick = {
+                        navController.navigate(Screen.Inicio.route) {
+                            popUpTo(Screen.Inicio.route) { inclusive = false }
+                        }
+                    },
                     onLogoutClick = {
                         navController.navigate(Screen.Login.route) {
                             popUpTo(0) { inclusive = true }
@@ -160,6 +175,11 @@ fun HormiAppNavigation(
             // --- Additional Flows ---
             composable(route = Screen.Ingresos.route) {
                 com.hormi.hormiapp.ui.ingresos.IngresosScreen(
+                    onLogoClick = {
+                        navController.navigate(Screen.Inicio.route) {
+                            popUpTo(Screen.Inicio.route) { inclusive = false }
+                        }
+                    },
                     onBackClick = {
                         navController.popBackStack()
                     },
@@ -171,6 +191,11 @@ fun HormiAppNavigation(
             
             composable(route = Screen.RegistrarGasto.route) {
                 com.hormi.hormiapp.ui.add_expense.AddExpenseScreen(
+                    onLogoClick = {
+                        navController.navigate(Screen.Inicio.route) {
+                            popUpTo(Screen.Inicio.route) { inclusive = false }
+                        }
+                    },
                     onBackClick = {
                         navController.popBackStack()
                     },
@@ -184,6 +209,11 @@ fun HormiAppNavigation(
                 arguments = listOf(androidx.navigation.navArgument("gastoId") { type = androidx.navigation.NavType.IntType })
             ) { backStackEntry ->
                 com.hormi.hormiapp.ui.detalle_gasto.DetalleGastoScreen(
+                    onLogoClick = {
+                        navController.navigate(Screen.Inicio.route) {
+                            popUpTo(Screen.Inicio.route) { inclusive = false }
+                        }
+                    },
                     onBackClick = {
                         navController.popBackStack()
                     },
@@ -194,6 +224,11 @@ fun HormiAppNavigation(
             }
             composable(route = Screen.Metas.route) {
                 com.hormi.hormiapp.ui.metas_ahorro.MetasAhorroScreen(
+                    onLogoClick = {
+                        navController.navigate(Screen.Inicio.route) {
+                            popUpTo(Screen.Inicio.route) { inclusive = false }
+                        }
+                    },
                     onBackClick = {
                         navController.popBackStack()
                     },
@@ -207,6 +242,11 @@ fun HormiAppNavigation(
             }
             composable(route = Screen.Configuracion.route) {
                 com.hormi.hormiapp.ui.configuracion.ConfiguracionScreen(
+                    onLogoClick = {
+                        navController.navigate(Screen.Inicio.route) {
+                            popUpTo(Screen.Inicio.route) { inclusive = false }
+                        }
+                    },
                     onBackClick = {
                         navController.popBackStack()
                     }
@@ -214,6 +254,11 @@ fun HormiAppNavigation(
             }
             composable(route = Screen.Creditos.route) {
                 com.hormi.hormiapp.ui.creditos.CreditosScreen(
+                    onLogoClick = {
+                        navController.navigate(Screen.Inicio.route) {
+                            popUpTo(Screen.Inicio.route) { inclusive = false }
+                        }
+                    },
                     onBackClick = {
                         navController.popBackStack()
                     }

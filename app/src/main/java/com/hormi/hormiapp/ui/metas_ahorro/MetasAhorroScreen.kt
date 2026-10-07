@@ -1,4 +1,4 @@
-package com.hormi.hormiapp.ui.metas_ahorro
+﻿package com.hormi.hormiapp.ui.metas_ahorro
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -40,6 +40,7 @@ fun MetasAhorroScreen(
     onBackClick: () -> Unit,
     onNavigateToNuevaMeta: () -> Unit = {},
     onNavigateToAbonar: (Int) -> Unit = {},
+    onLogoClick: () -> Unit = {},
     viewModel: MetasAhorroViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -51,6 +52,7 @@ fun MetasAhorroScreen(
             HormiAppHeader(
                 title = "Metas de ahorro",
                 onBackClick = onBackClick,
+            onLogoClick = onLogoClick,
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)
             )
         },

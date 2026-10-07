@@ -1,4 +1,4 @@
-package com.hormi.hormiapp.ui.gastos
+﻿package com.hormi.hormiapp.ui.gastos
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -41,6 +41,7 @@ fun GastosScreen(
     modifier: Modifier = Modifier,
     onNavigateToAddExpense: () -> Unit = {},
     onNavigateToDetalleGasto: (Int) -> Unit = {},
+    onLogoClick: () -> Unit = {},
     viewModel: GastosViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -54,7 +55,8 @@ fun GastosScreen(
             
             HormiAppHeader(
                 title = "Mis gastos",
-                onBackClick = null, // Es un tab principal, no necesita volver atrás
+                onBackClick = null,
+            onLogoClick = onLogoClick, // Es un tab principal, no necesita volver atrás
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)
             )
 

@@ -1,4 +1,4 @@
-package com.hormi.hormiapp.ui.analisis
+﻿package com.hormi.hormiapp.ui.analisis
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -40,6 +40,7 @@ import java.util.Locale
 fun AnalisisScreen(
     modifier: Modifier = Modifier,
     onNavigateToAddExpense: () -> Unit = {},
+    onLogoClick: () -> Unit = {},
     viewModel: AnalisisViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -64,6 +65,7 @@ fun AnalisisScreen(
             HormiAppHeader(
                 title = "Análisis hormiga",
                 onBackClick = null,
+            onLogoClick = onLogoClick,
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)
             )
 

@@ -25,6 +25,7 @@ import com.hormi.hormiapp.ui.theme.PrimaryGreen
 fun HormiAppHeader(
     title: String,
     onBackClick: (() -> Unit)? = null,
+    onLogoClick: (() -> Unit)? = null,
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier.fillMaxWidth()) {
@@ -50,7 +51,10 @@ fun HormiAppHeader(
             Image(
                 painter = painterResource(id = R.drawable.hormiapp_logo),
                 contentDescription = "Logo HormiApp",
-                modifier = Modifier.size(40.dp)
+                modifier = Modifier
+                    .size(40.dp)
+                    .clip(CircleShape)
+                    .then(if (onLogoClick != null) Modifier.clickable { onLogoClick() } else Modifier)
             )
             
             Spacer(modifier = Modifier.width(12.dp))
