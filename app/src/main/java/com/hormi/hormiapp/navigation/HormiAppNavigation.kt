@@ -180,6 +180,19 @@ fun HormiAppNavigation(
                     }
                 )
             }
+            composable(route = Screen.Metas.route) {
+                com.hormi.hormiapp.ui.metas_ahorro.MetasAhorroScreen(
+                    onBackClick = {
+                        navController.popBackStack()
+                    },
+                    onNavigateToNuevaMeta = {
+                        // TODO
+                    },
+                    onNavigateToAbonar = { id ->
+                        // TODO
+                    }
+                )
+            }
         }
     }
 }

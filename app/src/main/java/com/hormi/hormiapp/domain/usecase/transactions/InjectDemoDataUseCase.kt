@@ -1,11 +1,14 @@
 package com.hormi.hormiapp.domain.usecase.transactions
 
+import com.hormi.hormiapp.data.local.entity.GoalEntity
 import com.hormi.hormiapp.data.local.entity.TransactionEntity
+import com.hormi.hormiapp.data.repository.GoalRepository
 import com.hormi.hormiapp.data.repository.TransactionRepository
 import javax.inject.Inject
 
 class InjectDemoDataUseCase @Inject constructor(
-    private val repository: TransactionRepository
+    private val repository: TransactionRepository,
+    private val goalRepository: GoalRepository
 ) {
     suspend operator fun invoke() {
         val now = System.currentTimeMillis()
@@ -37,6 +40,16 @@ class InjectDemoDataUseCase @Inject constructor(
 
         demoTransactions.forEach { transaction ->
             repository.insertTransaction(transaction)
+        }
+
+        val demoGoals = listOf(
+            GoalEntity(name = "Portátil nuevo", targetAmount = 3000000.0, currentAmount = 1200000.0, iconName = "Laptop"),
+            GoalEntity(name = "Viaje a Santa Marta", targetAmount = 1200000.0, currentAmount = 900000.0, iconName = "Airplane"),
+            GoalEntity(name = "Audífonos", targetAmount = 250000.0, currentAmount = 250000.0, iconName = "Headphones")
+        )
+
+        demoGoals.forEach { goal ->
+            goalRepository.insertGoal(goal)
         }
     }
 }

@@ -3,6 +3,7 @@ package com.hormi.hormiapp.di
 import android.content.Context
 import androidx.room.Room
 import com.hormi.hormiapp.data.local.HormiAppDatabase
+import com.hormi.hormiapp.data.local.dao.GoalDao
 import com.hormi.hormiapp.data.local.dao.TransactionDao
 import dagger.Module
 import dagger.Provides
@@ -24,7 +25,9 @@ object AppModule {
             context,
             HormiAppDatabase::class.java,
             "hormiapp_db"
-        ).build()
+        )
+        .fallbackToDestructiveMigration()
+        .build()
     }
 
     @Provides
@@ -33,5 +36,13 @@ object AppModule {
         database: HormiAppDatabase
     ): TransactionDao {
         return database.transactionDao
+    }
+
+    @Provides
+    @Singleton
+    fun provideGoalDao(
+        database: HormiAppDatabase
+    ): GoalDao {
+        return database.goalDao
     }
 }
