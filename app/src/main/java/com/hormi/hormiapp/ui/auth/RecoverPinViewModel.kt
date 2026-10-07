@@ -2,8 +2,9 @@ package com.hormi.hormiapp.ui.auth
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.hormi.hormiapp.domain.usecase.preferences.GetSecurityAnswerUseCase
-import com.hormi.hormiapp.domain.usecase.preferences.SaveUserPinOnlyUseCase
+import com.hormi.hormiapp.domain.usecase.preferences.GetUserNameUseCase
+import com.hormi.hormiapp.domain.usecase.preferences.ResetPinResult
+import com.hormi.hormiapp.domain.usecase.preferences.ResetPinUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -14,12 +15,24 @@ import javax.inject.Inject
 
 @HiltViewModel
 class RecoverPinViewModel @Inject constructor(
-    private val getSecurityAnswerUseCase: GetSecurityAnswerUseCase,
-    private val saveUserPinOnlyUseCase: SaveUserPinOnlyUseCase
+    private val resetPinUseCase: ResetPinUseCase,
+    private val getUserNameUseCase: GetUserNameUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(RecoverPinUiState())
     val uiState: StateFlow<RecoverPinUiState> = _uiState.asStateFlow()
+
+    init {
+        // Se sugiere la última cuenta usada, pero se puede cambiar para recuperar otra
+        viewModelScope.launch {
+            val name = getUserNameUseCase().firstOrNull() ?: ""
+            if (_uiState.value.nombre.isEmpty()) _uiState.value = _uiState.value.copy(nombre = name)
+        }
+    }
+
+    fun onNombreChange(nombre: String) {
+        _uiState.value = _uiState.value.copy(nombre = nombre, error = null)
+    }
 
     fun onSecurityAnswerChange(answer: String) {
         _uiState.value = _uiState.value.copy(securityAnswer = answer, error = null)
@@ -48,6 +61,10 @@ class RecoverPinViewModel @Inject constructor(
     fun onSaveNewPinClick(onSuccess: () -> Unit) {
         val currentState = _uiState.value
 
+        if (currentState.nombre.isBlank()) {
+            _uiState.value = currentState.copy(error = "Escribe tu nombre de usuario")
+            return
+        }
         if (currentState.securityAnswer.isBlank()) {
             _uiState.value = currentState.copy(error = "Debes ingresar tu respuesta de seguridad")
             return
@@ -62,22 +79,17 @@ class RecoverPinViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
-            val savedAnswer = getSecurityAnswerUseCase().firstOrNull()
-            
-            // Validar respuesta ignorando mayúsculas y minúsculas y espacios extra
-            if (savedAnswer?.trim()?.equals(currentState.securityAnswer.trim(), ignoreCase = true) == true) {
-                // Respuesta correcta -> Guardar el nuevo PIN
-                saveUserPinOnlyUseCase(currentState.newPin)
-                onSuccess()
-            } else {
-                // Respuesta incorrecta
-                _uiState.value = currentState.copy(error = "La respuesta de seguridad es incorrecta")
+            when (resetPinUseCase(currentState.nombre, currentState.securityAnswer, currentState.newPin)) {
+                ResetPinResult.OK -> onSuccess()
+                ResetPinResult.NOT_FOUND -> _uiState.value = currentState.copy(error = "No existe una cuenta con ese nombre")
+                ResetPinResult.WRONG_ANSWER -> _uiState.value = currentState.copy(error = "La respuesta de seguridad es incorrecta")
             }
         }
     }
 }
 
 data class RecoverPinUiState(
+    val nombre: String = "",
     val securityAnswer: String = "",
     val newPin: String = "",
     val confirmNewPin: String = "",

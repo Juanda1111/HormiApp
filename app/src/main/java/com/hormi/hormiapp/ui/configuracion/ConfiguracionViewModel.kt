@@ -3,7 +3,7 @@ package com.hormi.hormiapp.ui.configuracion
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.hormi.hormiapp.domain.usecase.preferences.ClearAllDataUseCase
+import com.hormi.hormiapp.domain.usecase.preferences.DeleteAccountUseCase
 import com.hormi.hormiapp.data.preferences.UserPreferencesRepository
 import com.hormi.hormiapp.reminder.ReminderScheduler
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -32,7 +32,7 @@ data class ConfiguracionUiState(
 class ConfiguracionViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
     private val userPreferencesRepository: UserPreferencesRepository,
-    private val clearAllDataUseCase: ClearAllDataUseCase
+    private val deleteAccountUseCase: DeleteAccountUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ConfiguracionUiState())
@@ -103,10 +103,10 @@ class ConfiguracionViewModel @Inject constructor(
         viewModelScope.launch { userPreferencesRepository.updateAntExpenseThreshold(value) }
     }
 
-    /** Borra transacciones, metas y todas las preferencias (incluida la cuenta local). */
+    /** Borra los gastos, ingresos, metas y ajustes de esta cuenta y la elimina. Las demás cuentas no se tocan. */
     fun deleteAllData(onDone: () -> Unit) {
         viewModelScope.launch {
-            clearAllDataUseCase()
+            deleteAccountUseCase.deleteCurrent()
             onDone()
         }
     }

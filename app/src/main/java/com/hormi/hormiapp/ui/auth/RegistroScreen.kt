@@ -214,15 +214,6 @@ fun RegistroScreen(
             Text(text = "Crear cuenta", fontSize = 16.sp, fontWeight = FontWeight.Bold)
         }
         
-        if (uiState.hasExistingAccount) {
-            Spacer(modifier = Modifier.height(12.dp))
-            Text(
-                text = "Ya hay una cuenta en este dispositivo. Al crear otra se borrarán sus datos.",
-                fontSize = 12.sp,
-                color = Color.Gray
-            )
-        }
-
         Spacer(modifier = Modifier.height(12.dp))
 
         // Usuario demo: cuenta con datos de ejemplo para conocer la app

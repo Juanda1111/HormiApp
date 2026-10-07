@@ -81,6 +81,28 @@ fun RecoverPinScreen(
             )
         }
 
+        // Nombre de usuario de la cuenta a recuperar
+        Text(text = "Nombre de usuario", fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurface)
+        Spacer(modifier = Modifier.height(4.dp))
+        OutlinedTextField(
+            value = uiState.nombre,
+            onValueChange = viewModel::onNombreChange,
+            placeholder = { Text("Tu nombre", color = Color.LightGray) },
+            modifier = Modifier.fillMaxWidth(),
+            singleLine = true,
+            shape = RoundedCornerShape(12.dp),
+            colors = TextFieldDefaults.colors(
+                focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
+                focusedIndicatorColor = PrimaryGreen,
+                unfocusedIndicatorColor = Color.LightGray,
+                unfocusedContainerColor = Color.Transparent,
+                focusedContainerColor = Color.Transparent
+            )
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
         // Pregunta de seguridad
         Text(text = "Pregunta de seguridad: ¿Cuál es tu mayor sueño?", fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurface)
         Spacer(modifier = Modifier.height(4.dp))

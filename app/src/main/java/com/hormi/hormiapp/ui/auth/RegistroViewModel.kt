@@ -2,36 +2,26 @@ package com.hormi.hormiapp.ui.auth
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.hormi.hormiapp.domain.usecase.preferences.ClearAllDataUseCase
-import com.hormi.hormiapp.domain.usecase.preferences.GetUserNameUseCase
+import com.hormi.hormiapp.data.preferences.UserPreferencesRepository
+import com.hormi.hormiapp.util.AccountId
 import com.hormi.hormiapp.domain.usecase.preferences.SaveUserDataUseCase
 import com.hormi.hormiapp.domain.usecase.preferences.StartDemoUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class RegistroViewModel @Inject constructor(
     private val saveUserDataUseCase: SaveUserDataUseCase,
-    private val clearAllDataUseCase: ClearAllDataUseCase,
     private val startDemoUseCase: StartDemoUseCase,
-    private val getUserNameUseCase: GetUserNameUseCase
+    private val preferences: UserPreferencesRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(RegistroUiState())
     val uiState: StateFlow<RegistroUiState> = _uiState.asStateFlow()
-
-    init {
-        // Si ya hay una cuenta en el dispositivo, crear otra la reemplaza: se avisa en pantalla
-        viewModelScope.launch {
-            val existing = getUserNameUseCase().firstOrNull()
-            _uiState.value = _uiState.value.copy(hasExistingAccount = !existing.isNullOrBlank())
-        }
-    }
 
     fun onNombreChange(nombre: String) {
         _uiState.value = _uiState.value.copy(nombre = nombre, error = null)
@@ -81,9 +71,17 @@ class RegistroViewModel @Inject constructor(
             return
         }
 
-        // Una cuenta nueva siempre empieza vacía: se borran gastos, metas y ajustes de cualquier cuenta anterior
+        if (AccountId.isReserved(currentState.nombre)) {
+            _uiState.value = currentState.copy(error = "Ese nombre está reservado para la cuenta de demostración")
+            return
+        }
+
+        // Una cuenta nueva siempre empieza vacía y no afecta a las demás cuentas del dispositivo
         viewModelScope.launch {
-            clearAllDataUseCase()
+            if (preferences.accountExists(currentState.nombre)) {
+                _uiState.value = currentState.copy(error = "Ya existe una cuenta con ese nombre")
+                return@launch
+            }
             saveUserDataUseCase(
                 name = currentState.nombre,
                 pin = currentState.pin,
@@ -109,6 +107,5 @@ data class RegistroUiState(
     val securityAnswer: String = "",
     val pinVisible: Boolean = false,
     val confirmPinVisible: Boolean = false,
-    val hasExistingAccount: Boolean = false,
     val error: String? = null
 )
