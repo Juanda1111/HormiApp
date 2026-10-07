@@ -235,12 +235,6 @@ fun RegistroScreen(
         ) {
             Text(text = "Probar con usuario demo", fontSize = 15.sp, color = PrimaryGreen, fontWeight = FontWeight.Bold)
         }
-        Text(
-            text = "Carga datos de ejemplo. Nombre: Demo · PIN: 1234",
-            fontSize = 12.sp,
-            color = Color.Gray,
-            modifier = Modifier.padding(top = 6.dp)
-        )
 
         Spacer(modifier = Modifier.height(32.dp)) // Espacio extra al final para el scroll
     }

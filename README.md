@@ -23,6 +23,7 @@ Proyecto de la **Entrega 3 – APP Nativa** del curso de Aplicaciones Móviles (
 - **Análisis:** total de gastos hormiga, comparación semanal, categorías principales y proyección.
 - **Metas de ahorro:** crear y seguir metas.
 - **Perfil, Configuración** (umbral de gasto hormiga) y **Créditos**.
+- **Usuario demo:** el botón «Probar con usuario demo» de Crear cuenta carga una cuenta de ejemplo (nombre Demo, PIN 1234) con gastos, ingresos y metas. Una cuenta nueva siempre empieza vacía.
 
 ## Pantallas y navegación
 
