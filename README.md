@@ -23,6 +23,7 @@ Proyecto de la **Entrega 3 – APP Nativa** del curso de Aplicaciones Móviles (
 - **Análisis:** total de gastos hormiga, comparación semanal, categorías principales y proyección.
 - **Metas de ahorro:** crear y seguir metas.
 - **Perfil, Configuración** (umbral de gasto hormiga) y **Créditos**.
+- **Usuario demo:** el botón «Probar con usuario demo» de Crear cuenta carga una cuenta de ejemplo (nombre Demo, PIN 1234) con gastos, ingresos y metas. Una cuenta nueva siempre empieza vacía.
 
 ## Pantallas y navegación
 
@@ -63,7 +64,6 @@ app/src/main/java/com/hormi/hormiapp/
 - Room (transacciones y metas) y DataStore Preferences (datos de usuario)
 - Hilt (inyección de dependencias) y KSP
 - Gradle con catálogo de versiones (`gradle/libs.versions.toml`)
-- Firebase BoM (Analytics y Firestore) incluido como dependencia
 
 Configuración: `minSdk 26`, `targetSdk 37`, `compileSdk 37`.
 
@@ -79,8 +79,7 @@ Configuración: `minSdk 26`, `targetSdk 37`, `compileSdk 37`.
 Requisitos: Android Studio reciente (compatible con AGP 9.3) y JDK 17 o superior.
 
 1. Clonar el repositorio y abrirlo en Android Studio.
-2. El proyecto usa el plugin `com.google.gms.google-services`, pero `google-services.json` **no está en el repositorio** (está en `.gitignore`). Pedirlo al equipo y copiarlo en `app/google-services.json`.
-3. Sincronizar Gradle y ejecutar en un emulador o dispositivo físico (Android 8.0 / API 26 o superior).
+2. Sincronizar Gradle y ejecutar en un emulador o dispositivo físico (Android 8.0 / API 26 o superior).
 
 Desde terminal:
 
