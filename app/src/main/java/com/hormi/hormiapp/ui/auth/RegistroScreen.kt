@@ -30,6 +30,7 @@ import com.hormi.hormiapp.ui.theme.PrimaryGreen
 @Composable
 fun RegistroScreen(
     onRegisterSuccess: () -> Unit,
+    onDemoStarted: () -> Unit = {},
     onBackClick: () -> Unit,
     viewModel: RegistroViewModel = hiltViewModel()
 ) {
@@ -212,6 +213,35 @@ fun RegistroScreen(
             Text(text = "Crear cuenta", fontSize = 16.sp, fontWeight = FontWeight.Bold)
         }
         
+        if (uiState.hasExistingAccount) {
+            Spacer(modifier = Modifier.height(12.dp))
+            Text(
+                text = "Ya hay una cuenta en este dispositivo. Al crear otra se borrarán sus datos.",
+                fontSize = 12.sp,
+                color = Color.Gray
+            )
+        }
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        // Usuario demo: cuenta con datos de ejemplo para conocer la app
+        androidx.compose.material3.OutlinedButton(
+            onClick = { viewModel.onDemoClick(onSuccess = onDemoStarted) },
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(50.dp),
+            shape = RoundedCornerShape(12.dp),
+            border = androidx.compose.foundation.BorderStroke(1.dp, PrimaryGreen)
+        ) {
+            Text(text = "Probar con usuario demo", fontSize = 15.sp, color = PrimaryGreen, fontWeight = FontWeight.Bold)
+        }
+        Text(
+            text = "Carga datos de ejemplo. Nombre: Demo · PIN: 1234",
+            fontSize = 12.sp,
+            color = Color.Gray,
+            modifier = Modifier.padding(top = 6.dp)
+        )
+
         Spacer(modifier = Modifier.height(32.dp)) // Espacio extra al final para el scroll
     }
 }

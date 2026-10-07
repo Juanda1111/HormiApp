@@ -67,6 +67,11 @@ fun HormiAppNavigation(
                             popUpTo(Screen.Registro.route) { inclusive = true }
                         }
                     },
+                    onDemoStarted = {
+                        navController.navigate(Screen.Inicio.route) {
+                            popUpTo(0) { inclusive = true }
+                        }
+                    },
                     onBackClick = {
                         navController.popBackStack()
                     }
