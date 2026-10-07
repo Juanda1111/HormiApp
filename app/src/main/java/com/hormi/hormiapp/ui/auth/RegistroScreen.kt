@@ -109,7 +109,7 @@ fun RegistroScreen(
         OutlinedTextField(
             value = uiState.pin,
             onValueChange = viewModel::onPinChange,
-            placeholder = { Text("• • • •", color = Color.LightGray) },
+            placeholder = { Text("4 dígitos", color = Color.LightGray) },
             modifier = Modifier.fillMaxWidth(),
             singleLine = true,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword),
@@ -142,7 +142,7 @@ fun RegistroScreen(
         OutlinedTextField(
             value = uiState.confirmPin,
             onValueChange = viewModel::onConfirmPinChange,
-            placeholder = { Text("• • • •", color = Color.LightGray) },
+            placeholder = { Text("Repite el PIN", color = Color.LightGray) },
             modifier = Modifier.fillMaxWidth(),
             singleLine = true,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword),

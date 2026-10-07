@@ -1,5 +1,6 @@
 package com.hormi.hormiapp.ui.metas_ahorro
 
+import com.hormi.hormiapp.util.ThousandsVisualTransformation
 import androidx.compose.runtime.*
 import com.hormi.hormiapp.util.LocalCurrency
 import com.hormi.hormiapp.util.currencySymbol
@@ -315,6 +316,7 @@ private fun NewGoalDialog(
                     label = { Text("Monto objetivo") },
                     prefix = { Text("${currencySymbol(LocalCurrency.current)} ") },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    visualTransformation = ThousandsVisualTransformation(),
                     singleLine = true
                 )
                 Text("Ícono", color = Color.Gray, fontSize = 14.sp)

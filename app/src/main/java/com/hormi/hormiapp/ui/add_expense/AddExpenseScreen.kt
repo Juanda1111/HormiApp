@@ -1,5 +1,6 @@
 package com.hormi.hormiapp.ui.add_expense
 
+import com.hormi.hormiapp.util.ThousandsVisualTransformation
 import com.hormi.hormiapp.util.LocalCurrency
 import com.hormi.hormiapp.util.currencySymbol
 import com.hormi.hormiapp.util.rememberMoneyFormatter
@@ -178,6 +179,7 @@ fun AddExpenseScreen(
                         )
                     },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword),
+                    visualTransformation = ThousandsVisualTransformation(),
                     singleLine = true
                 )
 

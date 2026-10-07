@@ -108,7 +108,7 @@ fun RecoverPinScreen(
         OutlinedTextField(
             value = uiState.newPin,
             onValueChange = viewModel::onNewPinChange,
-            placeholder = { Text("• • • •", color = Color.LightGray) },
+            placeholder = { Text("4 dígitos", color = Color.LightGray) },
             modifier = Modifier.fillMaxWidth(),
             singleLine = true,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword),
@@ -141,7 +141,7 @@ fun RecoverPinScreen(
         OutlinedTextField(
             value = uiState.confirmNewPin,
             onValueChange = viewModel::onConfirmNewPinChange,
-            placeholder = { Text("• • • •", color = Color.LightGray) },
+            placeholder = { Text("Repite el PIN", color = Color.LightGray) },
             modifier = Modifier.fillMaxWidth(),
             singleLine = true,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword),

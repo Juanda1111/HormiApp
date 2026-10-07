@@ -1,5 +1,6 @@
 package com.hormi.hormiapp.ui.onboarding
 
+import com.hormi.hormiapp.util.ThousandsVisualTransformation
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -156,10 +157,11 @@ fun OnboardingScreen(
         OutlinedTextField(
             value = uiState.income,
             onValueChange = viewModel::onIncomeChange,
-            placeholder = { Text("$ 0", color = Color.LightGray, fontSize = 24.sp, fontWeight = FontWeight.Bold) },
+            placeholder = { Text("0", color = Color.LightGray, fontSize = 24.sp, fontWeight = FontWeight.Bold) },
             modifier = Modifier.fillMaxWidth(),
             singleLine = true,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    visualTransformation = ThousandsVisualTransformation(),
             textStyle = LocalTextStyle.current.copy(
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,

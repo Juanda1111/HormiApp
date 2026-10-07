@@ -110,7 +110,7 @@ fun LoginScreen(
         OutlinedTextField(
             value = uiState.pin,
             onValueChange = viewModel::onPinChange,
-            placeholder = { Text("• • • •", color = Color.LightGray) },
+            placeholder = { Text("4 dígitos", color = Color.LightGray) },
             modifier = Modifier.fillMaxWidth(),
             singleLine = true,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword),

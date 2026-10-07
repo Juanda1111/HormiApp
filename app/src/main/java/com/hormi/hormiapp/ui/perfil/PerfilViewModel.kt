@@ -14,7 +14,8 @@ import javax.inject.Inject
 data class PerfilUiState(
     val userName: String = "",
     val monthlyIncome: Double = 0.0,
-    val initialLetter: String = "U"
+    val initialLetter: String = "U",
+    val memberSince: String = ""
 )
 
 @HiltViewModel
@@ -35,6 +36,16 @@ class PerfilViewModel @Inject constructor(
                 val actualName = name ?: "Usuario"
                 val letter = if (actualName.isNotEmpty()) actualName.first().uppercase() else "U"
                 _uiState.value = _uiState.value.copy(userName = actualName, initialLetter = letter)
+            }
+        }
+
+        viewModelScope.launch {
+            preferencesRepository.ensureRegisteredAt()
+            val format = java.text.SimpleDateFormat("d MMM yyyy", java.util.Locale("es", "ES"))
+            preferencesRepository.registeredAt.collectLatest { millis ->
+                if (millis != null) {
+                    _uiState.value = _uiState.value.copy(memberSince = format.format(java.util.Date(millis)))
+                }
             }
         }
 
