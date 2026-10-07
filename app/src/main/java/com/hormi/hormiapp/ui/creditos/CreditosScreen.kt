@@ -26,6 +26,7 @@ import com.hormi.hormiapp.R
 import com.hormi.hormiapp.ui.components.HormiAppHeader
 import com.hormi.hormiapp.ui.theme.AccentYellow
 import com.hormi.hormiapp.ui.theme.PrimaryGreen
+import com.hormi.hormiapp.util.PRIVACY_POLICY_URL
 
 @Composable
 fun CreditosScreen(
@@ -134,6 +135,11 @@ fun CreditosScreen(
                 )
                 Spacer(modifier = Modifier.width(6.dp))
                 Text(text = "Funciona sin internet", color = Color.Gray, fontSize = 13.sp)
+            }
+            Spacer(modifier = Modifier.height(8.dp))
+            val uriHandler = androidx.compose.ui.platform.LocalUriHandler.current
+            androidx.compose.material3.TextButton(onClick = { uriHandler.openUri(PRIVACY_POLICY_URL) }) {
+                Text(text = "Política de privacidad", color = PrimaryGreen, fontSize = 13.sp, fontWeight = FontWeight.Bold)
             }
             
             Spacer(modifier = Modifier.height(32.dp))

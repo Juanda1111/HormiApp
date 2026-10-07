@@ -171,7 +171,7 @@ fun RegistroScreen(
         
         Spacer(modifier = Modifier.height(8.dp))
         Text(
-            text = "Tu PIN se guarda cifrado en el celular.",
+            text = "Tu PIN se guarda solo en este celular.",
             fontSize = 10.sp,
             color = Color.Gray
         )
