@@ -1,5 +1,6 @@
 package com.hormi.hormiapp.ui.add_expense
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hormi.hormiapp.data.local.entity.TransactionEntity
@@ -8,6 +9,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -24,14 +26,20 @@ data class AddExpenseUiState(
     val note: String = "",
     val isImpulsive: Boolean = false,
     val dateTimestamp: Long = System.currentTimeMillis(),
-    val isSaved: Boolean = false
+    val isSaved: Boolean = false,
+    val isEditing: Boolean = false
 )
 
 @HiltViewModel
 class AddExpenseViewModel @Inject constructor(
     private val transactionRepository: TransactionRepository,
-    private val userPreferencesRepository: com.hormi.hormiapp.data.preferences.UserPreferencesRepository
+    private val userPreferencesRepository: com.hormi.hormiapp.data.preferences.UserPreferencesRepository,
+    savedStateHandle: SavedStateHandle
 ) : ViewModel() {
+
+    // Solo existe cuando se llega desde "Editar gasto"
+    private val editingId: Int? = savedStateHandle.get<Int>("gastoId")
+    private var editingTransaction: TransactionEntity? = null
 
     private val _uiState = MutableStateFlow(AddExpenseUiState())
     val uiState: StateFlow<AddExpenseUiState> = _uiState.asStateFlow()
@@ -39,6 +47,22 @@ class AddExpenseViewModel @Inject constructor(
     private var currentThreshold: Double = 15000.0
 
     init {
+        if (editingId != null) {
+            viewModelScope.launch {
+                val trans = transactionRepository.getAllTransactions().first().find { it.id == editingId }
+                if (trans != null) {
+                    editingTransaction = trans
+                    _uiState.value = _uiState.value.copy(
+                        amount = trans.amount.toLong().toString(),
+                        category = trans.category,
+                        note = trans.description,
+                        isImpulsive = trans.isAntExpense,
+                        dateTimestamp = trans.dateTimestamp,
+                        isEditing = true
+                    )
+                }
+            }
+        }
         viewModelScope.launch {
             userPreferencesRepository.antExpenseThreshold.collect { threshold ->
                 currentThreshold = threshold
@@ -90,6 +114,7 @@ class AddExpenseViewModel @Inject constructor(
             val isActuallyAntExpense = if (amountValue <= currentThreshold) true else state.isImpulsive
 
             val transaction = TransactionEntity(
+                id = editingTransaction?.id ?: 0,
                 amount = amountValue,
                 type = "EXPENSE",
                 category = state.category,
@@ -98,7 +123,11 @@ class AddExpenseViewModel @Inject constructor(
                 isAntExpense = isActuallyAntExpense
             )
             
-            transactionRepository.insertTransaction(transaction)
+            if (editingTransaction != null) {
+                transactionRepository.updateTransaction(transaction)
+            } else {
+                transactionRepository.insertTransaction(transaction)
+            }
             _uiState.value = _uiState.value.copy(isSaved = true)
         }
     }

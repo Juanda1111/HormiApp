@@ -14,9 +14,20 @@ import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import com.hormi.hormiapp.data.preferences.UserPreferencesRepository
+import com.hormi.hormiapp.util.LocalCurrency
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    @Inject
+    lateinit var preferencesRepository: UserPreferencesRepository
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -27,12 +38,21 @@ class MainActivity : ComponentActivity() {
         windowInsetsController.hide(WindowInsetsCompat.Type.navigationBars())
 
         setContent {
-            HormiAppTheme {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    HormiAppNavigation()
+            val theme by preferencesRepository.theme.collectAsState(initial = "Sistema")
+            val currency by preferencesRepository.currency.collectAsState(initial = "COP $")
+            val darkTheme = when (theme) {
+                "Oscuro" -> true
+                "Claro" -> false
+                else -> isSystemInDarkTheme()
+            }
+            HormiAppTheme(darkTheme = darkTheme) {
+                CompositionLocalProvider(LocalCurrency provides currency) {
+                    Surface(
+                        modifier = Modifier.fillMaxSize(),
+                        color = MaterialTheme.colorScheme.background
+                    ) {
+                        HormiAppNavigation()
+                    }
                 }
             }
         }

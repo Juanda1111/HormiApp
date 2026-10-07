@@ -1,4 +1,4 @@
-﻿package com.hormi.hormiapp.ui.creditos
+package com.hormi.hormiapp.ui.creditos
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -32,7 +32,7 @@ fun CreditosScreen(
     onBackClick: () -> Unit,
     onLogoClick: () -> Unit = {}
 ) {
-    val backgroundColor = Color(0xFFF9F6F0)
+    val backgroundColor = MaterialTheme.colorScheme.background
 
     Column(
         modifier = Modifier
@@ -68,7 +68,7 @@ fun CreditosScreen(
                 text = "HormiApp",
                 fontWeight = FontWeight.ExtraBold,
                 fontSize = 28.sp,
-                color = Color.Black
+                color = MaterialTheme.colorScheme.onSurface
             )
             
             Spacer(modifier = Modifier.height(4.dp))
@@ -151,7 +151,7 @@ fun TeamMemberCard(
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         shape = RoundedCornerShape(16.dp),
         border = BorderStroke(1.dp, Color.LightGray.copy(alpha = 0.5f))
     ) {
@@ -185,7 +185,7 @@ fun TeamMemberCard(
                     text = name,
                     fontWeight = FontWeight.Bold,
                     fontSize = 16.sp,
-                    color = Color.Black
+                    color = MaterialTheme.colorScheme.onSurface
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Row(verticalAlignment = Alignment.CenterVertically) {

@@ -1,4 +1,4 @@
-﻿package com.hormi.hormiapp.navigation
+package com.hormi.hormiapp.navigation
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
@@ -183,9 +183,6 @@ fun HormiAppNavigation(
                     onBackClick = {
                         navController.popBackStack()
                     },
-                    onAddExtraIncomeClick = {
-                        // TODO: Abrir modal o pantalla de ingreso extra
-                    }
                 )
             }
             
@@ -218,8 +215,22 @@ fun HormiAppNavigation(
                         navController.popBackStack()
                     },
                     onEditClick = { id ->
-                        // TODO: Navigate to Edit Expense Screen
+                        navController.navigate(Screen.EditarGasto.createRoute(id))
                     }
+                )
+            }
+            composable(
+                route = Screen.EditarGasto.route,
+                arguments = listOf(androidx.navigation.navArgument("gastoId") { type = androidx.navigation.NavType.IntType })
+            ) {
+                com.hormi.hormiapp.ui.add_expense.AddExpenseScreen(
+                    onLogoClick = {
+                        navController.navigate(Screen.Inicio.route) {
+                            popUpTo(Screen.Inicio.route) { inclusive = false }
+                        }
+                    },
+                    onBackClick = { navController.popBackStack() },
+                    onExpenseSaved = { navController.popBackStack() }
                 )
             }
             composable(route = Screen.Metas.route) {
@@ -232,16 +243,15 @@ fun HormiAppNavigation(
                     onBackClick = {
                         navController.popBackStack()
                     },
-                    onNavigateToNuevaMeta = {
-                        // TODO
-                    },
-                    onNavigateToAbonar = { id ->
-                        // TODO
-                    }
                 )
             }
             composable(route = Screen.Configuracion.route) {
                 com.hormi.hormiapp.ui.configuracion.ConfiguracionScreen(
+                    onDataDeleted = {
+                        navController.navigate(Screen.Splash.route) {
+                            popUpTo(0) { inclusive = true }
+                        }
+                    },
                     onLogoClick = {
                         navController.navigate(Screen.Inicio.route) {
                             popUpTo(Screen.Inicio.route) { inclusive = false }

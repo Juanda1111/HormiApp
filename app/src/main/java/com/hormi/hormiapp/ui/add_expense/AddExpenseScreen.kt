@@ -1,5 +1,8 @@
-﻿package com.hormi.hormiapp.ui.add_expense
+package com.hormi.hormiapp.ui.add_expense
 
+import com.hormi.hormiapp.util.LocalCurrency
+import com.hormi.hormiapp.util.currencySymbol
+import com.hormi.hormiapp.util.rememberMoneyFormatter
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -27,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.hormi.hormiapp.ui.components.HormiAppHeader
+import com.hormi.hormiapp.ui.components.categoryIcon
 import com.hormi.hormiapp.ui.theme.AccentYellow
 import com.hormi.hormiapp.ui.theme.PrimaryGreen
 import java.text.NumberFormat
@@ -43,7 +47,7 @@ fun AddExpenseScreen(
     viewModel: AddExpenseViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    val formatter = NumberFormat.getNumberInstance(Locale("es", "CO"))
+    val money = rememberMoneyFormatter()
 
     // Efecto de guardado exitoso
     LaunchedEffect(uiState.isSaved) {
@@ -52,7 +56,7 @@ fun AddExpenseScreen(
         }
     }
 
-    val backgroundColor = Color(0xFFF9F6F0)
+    val backgroundColor = MaterialTheme.colorScheme.background
 
     val quickExpenses = listOf(
         QuickExpense("Tinto", 2500.0, "Café y snacks", true),
@@ -68,9 +72,9 @@ fun AddExpenseScreen(
 
     // Estado para el DatePicker
     var showDatePicker by remember { mutableStateOf(false) }
-    val datePickerState = rememberDatePickerState(initialSelectedDateMillis = uiState.dateTimestamp)
 
     if (showDatePicker) {
+        val datePickerState = rememberDatePickerState(initialSelectedDateMillis = uiState.dateTimestamp)
         DatePickerDialog(
             onDismissRequest = { showDatePicker = false },
             confirmButton = {
@@ -100,7 +104,7 @@ fun AddExpenseScreen(
             // Se elimina .systemBarsPadding() para evitar que baje el header extra, ya que Scaffold lo provee
     ) {
         HormiAppHeader(
-            title = "Registrar gasto",
+            title = if (uiState.isEditing) "Editar gasto" else "Registrar gasto",
             onBackClick = onBackClick,
             onLogoClick = onLogoClick,
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)
@@ -112,8 +116,8 @@ fun AddExpenseScreen(
                 .padding(horizontal = 16.dp),
             contentPadding = PaddingValues(top = 16.dp, bottom = 32.dp)
         ) {
-            // Gastos rápidos
-            item {
+            // Gastos rápidos (solo al crear)
+            if (!uiState.isEditing) item {
                 Text("Gastos rápidos", color = Color.Gray, fontSize = 14.sp, fontWeight = FontWeight.Bold)
                 Spacer(modifier = Modifier.height(8.dp))
                 FlowRow(
@@ -126,19 +130,15 @@ fun AddExpenseScreen(
                             shape = RoundedCornerShape(8.dp),
                             border = BorderStroke(1.dp, Color.LightGray.copy(alpha = 0.5f)),
                             colors = ButtonDefaults.outlinedButtonColors(
-                                containerColor = Color.White,
-                                contentColor = Color.DarkGray
+                                containerColor = MaterialTheme.colorScheme.surface,
+                                contentColor = MaterialTheme.colorScheme.onSurface
                             ),
                             contentPadding = PaddingValues(horizontal = 12.dp, vertical = 6.dp)
                         ) {
-                            val icon = when {
-                                qe.category.contains("Café") -> Icons.Default.LocalCafe
-                                qe.category.contains("Transporte") -> Icons.Default.DirectionsBus
-                                else -> Icons.Default.Fastfood
-                            }
+                            val icon = categoryIcon(qe.category)
                             Icon(imageVector = icon, contentDescription = null, modifier = Modifier.size(16.dp), tint = PrimaryGreen)
                             Spacer(modifier = Modifier.width(6.dp))
-                            Text(text = "${qe.name} $${formatter.format(qe.amount)}", fontSize = 14.sp)
+                            Text(text = "${qe.name} ${money(qe.amount)}", fontSize = 14.sp)
                         }
                     }
                 }
@@ -156,24 +156,24 @@ fun AddExpenseScreen(
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(12.dp),
                     colors = OutlinedTextFieldDefaults.colors(
-                        focusedContainerColor = Color.White,
-                        unfocusedContainerColor = Color.White,
+                        focusedContainerColor = MaterialTheme.colorScheme.surface,
+                        unfocusedContainerColor = MaterialTheme.colorScheme.surface,
                         focusedBorderColor = PrimaryGreen,
                         unfocusedBorderColor = Color.LightGray,
-                        focusedTextColor = Color.Black,
-                        unfocusedTextColor = Color.Black
+                        focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                        unfocusedTextColor = MaterialTheme.colorScheme.onSurface
                     ),
                     textStyle = androidx.compose.ui.text.TextStyle(
                         fontSize = 28.sp,
                         fontWeight = FontWeight.ExtraBold,
-                        color = Color.Black
+                        color = MaterialTheme.colorScheme.onSurface
                     ),
                     leadingIcon = {
                         Text(
-                            text = "$",
+                            text = currencySymbol(LocalCurrency.current),
                             fontSize = 28.sp,
                             fontWeight = FontWeight.ExtraBold,
-                            color = Color.Black,
+                            color = MaterialTheme.colorScheme.onSurface,
                             modifier = Modifier.padding(start = 16.dp)
                         )
                     },
@@ -226,8 +226,8 @@ fun AddExpenseScreen(
                 ) {
                     categories.forEach { category ->
                         val isSelected = uiState.category == category
-                        val bgColor = if (isSelected) PrimaryGreen else Color.White
-                        val contentColor = if (isSelected) Color.White else Color.DarkGray
+                        val bgColor = if (isSelected) PrimaryGreen else MaterialTheme.colorScheme.surface
+                        val contentColor = if (isSelected) Color.White else MaterialTheme.colorScheme.onSurface
                         val borderColor = if (isSelected) PrimaryGreen else Color.LightGray.copy(alpha = 0.5f)
 
                         Box(
@@ -252,7 +252,7 @@ fun AddExpenseScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .clip(RoundedCornerShape(12.dp))
-                        .background(Color.White)
+                        .background(MaterialTheme.colorScheme.surface)
                         .border(1.dp, Color.LightGray, RoundedCornerShape(12.dp))
                         .clickable { showDatePicker = true }
                         .padding(horizontal = 16.dp, vertical = 16.dp),
@@ -270,7 +270,7 @@ fun AddExpenseScreen(
                         }
                         Text(
                             text = SimpleDateFormat("d MMM yyyy", Locale("es", "ES")).format(Date(uiState.dateTimestamp)),
-                            color = Color.Black,
+                            color = MaterialTheme.colorScheme.onSurface,
                             fontWeight = FontWeight.Bold,
                             fontSize = 16.sp
                         )
@@ -287,7 +287,7 @@ fun AddExpenseScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Column {
-                        Text("¿Fue impulsivo?", fontSize = 16.sp, fontWeight = FontWeight.Bold, color = Color.Black)
+                        Text("¿Fue impulsivo?", fontSize = 16.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
                         Text("Lo compraste sin haberlo planeado", fontSize = 14.sp, color = Color.Gray)
                     }
                     Switch(
@@ -325,12 +325,12 @@ fun AddExpenseScreen(
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(12.dp),
                     colors = OutlinedTextFieldDefaults.colors(
-                        focusedContainerColor = Color.White,
-                        unfocusedContainerColor = Color.White,
+                        focusedContainerColor = MaterialTheme.colorScheme.surface,
+                        unfocusedContainerColor = MaterialTheme.colorScheme.surface,
                         focusedBorderColor = PrimaryGreen,
                         unfocusedBorderColor = Color.LightGray,
-                        focusedTextColor = Color.Black,
-                        unfocusedTextColor = Color.Black
+                        focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                        unfocusedTextColor = MaterialTheme.colorScheme.onSurface
                     )
                 )
                 Spacer(modifier = Modifier.height(32.dp))
@@ -348,7 +348,7 @@ fun AddExpenseScreen(
                 ) {
                     Icon(imageVector = Icons.Default.Check, contentDescription = null, modifier = Modifier.size(24.dp))
                     Spacer(modifier = Modifier.width(8.dp))
-                    Text("Guardar gasto", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                    Text(if (uiState.isEditing) "Guardar cambios" else "Guardar gasto", fontSize = 16.sp, fontWeight = FontWeight.Bold)
                 }
             }
         }

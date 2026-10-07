@@ -1,5 +1,6 @@
 package com.hormi.hormiapp.ui.inicio
 
+import com.hormi.hormiapp.util.rememberMoneyFormatter
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -43,10 +44,9 @@ fun InicioScreen(
     viewModel: InicioViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    val formatter = NumberFormat.getCurrencyInstance(Locale("es", "CO"))
-    formatter.maximumFractionDigits = 0
+    val money = rememberMoneyFormatter()
 
-    val backgroundColor = Color(0xFFF9F6F0) // Beige muy claro como en el diseño
+    val backgroundColor = MaterialTheme.colorScheme.background // Beige muy claro como en el diseño
 
     Box(modifier = modifier.fillMaxSize().background(backgroundColor)) {
         Column(modifier = Modifier.fillMaxSize()) {
@@ -78,7 +78,7 @@ fun InicioScreen(
                             )
                             Spacer(modifier = Modifier.height(2.dp))
                             Text(
-                                text = formatter.format(uiState.availableBalance),
+                                text = money(uiState.availableBalance),
                                 color = Color.White,
                                 fontSize = 32.sp,
                                 fontWeight = FontWeight.Bold
@@ -100,7 +100,7 @@ fun InicioScreen(
                                     Spacer(modifier = Modifier.width(4.dp))
                                     Column {
                                         Text(text = "Ingresos", color = Color.White.copy(alpha = 0.8f), fontSize = 10.sp)
-                                        Text(text = formatter.format(uiState.totalIncome), color = Color.White, fontWeight = FontWeight.Bold, fontSize = 12.sp)
+                                        Text(text = money(uiState.totalIncome), color = Color.White, fontWeight = FontWeight.Bold, fontSize = 12.sp)
                                     }
                                 }
                                 // Gastos
@@ -114,7 +114,7 @@ fun InicioScreen(
                                     Spacer(modifier = Modifier.width(4.dp))
                                     Column {
                                         Text(text = "Gastos", color = Color.White.copy(alpha = 0.8f), fontSize = 10.sp)
-                                        Text(text = formatter.format(uiState.totalExpenses), color = Color.White, fontWeight = FontWeight.Bold, fontSize = 12.sp)
+                                        Text(text = money(uiState.totalExpenses), color = Color.White, fontWeight = FontWeight.Bold, fontSize = 12.sp)
                                     }
                                 }
                             }
@@ -129,7 +129,7 @@ fun InicioScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .border(1.dp, Color.LightGray.copy(alpha = 0.3f), RoundedCornerShape(12.dp)),
-                        colors = CardDefaults.cardColors(containerColor = Color.White),
+                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
                         shape = RoundedCornerShape(12.dp)
                     ) {
                         Column(modifier = Modifier.padding(12.dp)) {
@@ -142,7 +142,7 @@ fun InicioScreen(
                                     text = "Presupuesto semanal",
                                     fontWeight = FontWeight.Bold,
                                     fontSize = 14.sp,
-                                    color = Color.Black
+                                    color = MaterialTheme.colorScheme.onSurface
                                 )
                                 Text(
                                     text = "${(uiState.weeklyPercent * 100).toInt()}%",
@@ -171,12 +171,12 @@ fun InicioScreen(
                                 horizontalArrangement = Arrangement.SpaceBetween
                             ) {
                                 Text(
-                                    text = "${formatter.format(uiState.weeklySpent)} de ${formatter.format(uiState.weeklyBudget)}",
+                                    text = "${money(uiState.weeklySpent)} de ${money(uiState.weeklyBudget)}",
                                     color = Color.Gray,
                                     fontSize = 10.sp
                                 )
                                 Text(
-                                    text = "Te quedan ${formatter.format(uiState.weeklyRemaining)}",
+                                    text = "Te quedan ${money(uiState.weeklyRemaining)}",
                                     color = Color.Gray,
                                     fontSize = 10.sp
                                 )
@@ -219,7 +219,7 @@ fun InicioScreen(
                             }
                             Column(horizontalAlignment = Alignment.End) {
                                 Text(text = "${uiState.highestAntExpenseCount} gastos", color = Color(0xFF5D4037), fontSize = 10.sp)
-                                Text(text = formatter.format(uiState.highestAntExpenseTotal), color = Color(0xFF5D4037), fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                                Text(text = money(uiState.highestAntExpenseTotal), color = Color(0xFF5D4037), fontSize = 16.sp, fontWeight = FontWeight.Bold)
                             }
                         }
                     }
@@ -238,7 +238,7 @@ fun InicioScreen(
                                 .weight(1f)
                                 .clickable { onNavigateToIngresos() },
                             shape = RoundedCornerShape(12.dp),
-                            colors = CardDefaults.cardColors(containerColor = Color.White),
+                            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
                             border = BorderStroke(1.dp, Color.LightGray.copy(alpha = 0.3f))
                         ) {
                             Row(
@@ -258,7 +258,7 @@ fun InicioScreen(
                                     Icon(imageVector = Icons.Default.Payments, contentDescription = null, tint = PrimaryGreen, modifier = Modifier.size(12.dp))
                                 }
                                 Spacer(modifier = Modifier.width(6.dp))
-                                Text("Ingresos", color = Color.Black, fontWeight = FontWeight.Bold, fontSize = 12.sp)
+                                Text("Ingresos", color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.Bold, fontSize = 12.sp)
                             }
                         }
                         
@@ -268,7 +268,7 @@ fun InicioScreen(
                                 .weight(1f)
                                 .clickable { onNavigateToMetas() },
                             shape = RoundedCornerShape(12.dp),
-                            colors = CardDefaults.cardColors(containerColor = Color.White),
+                            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
                             border = BorderStroke(1.dp, Color.LightGray.copy(alpha = 0.3f))
                         ) {
                             Row(
@@ -288,7 +288,7 @@ fun InicioScreen(
                                     Icon(imageVector = Icons.Default.Savings, contentDescription = null, tint = PrimaryGreen, modifier = Modifier.size(12.dp))
                                 }
                                 Spacer(modifier = Modifier.width(6.dp))
-                                Text("Metas de ahorro", color = Color.Black, fontWeight = FontWeight.Bold, fontSize = 12.sp)
+                                Text("Metas de ahorro", color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.Bold, fontSize = 12.sp)
                             }
                         }
                     }
@@ -306,7 +306,7 @@ fun InicioScreen(
                             text = "Últimos gastos",
                             fontSize = 20.sp,
                             fontWeight = FontWeight.Bold,
-                            color = Color.Black
+                            color = MaterialTheme.colorScheme.onSurface
                         )
                         Text(
                             text = "Ver todos",
@@ -350,7 +350,7 @@ fun InicioScreen(
                             Text(
                                 text = transaction.category,
                                 fontWeight = FontWeight.Bold,
-                                color = Color.Black,
+                                color = MaterialTheme.colorScheme.onSurface,
                                 fontSize = 16.sp
                             )
                             Text(
@@ -363,9 +363,9 @@ fun InicioScreen(
                         // Monto y Tag
                         Column(horizontalAlignment = Alignment.End) {
                             Text(
-                                text = "-$ ${formatter.format(transaction.amount).replace("$", "").trim()}",
+                                text = "-${money(transaction.amount)}",
                                 fontWeight = FontWeight.Bold,
-                                color = Color.Black,
+                                color = MaterialTheme.colorScheme.onSurface,
                                 fontSize = 16.sp
                             )
                             

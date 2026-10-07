@@ -1,5 +1,6 @@
-﻿package com.hormi.hormiapp.ui.perfil
+package com.hormi.hormiapp.ui.perfil
 
+import com.hormi.hormiapp.util.rememberMoneyFormatter
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -48,10 +49,9 @@ fun PerfilScreen(
     viewModel: PerfilViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    val formatter = NumberFormat.getCurrencyInstance(Locale("es", "CO"))
-    formatter.maximumFractionDigits = 0
+    val money = rememberMoneyFormatter()
 
-    val backgroundColor = Color(0xFFF9F6F0)
+    val backgroundColor = MaterialTheme.colorScheme.background
 
     Box(modifier = modifier.fillMaxSize().background(backgroundColor)) {
         Column(modifier = Modifier.fillMaxSize()) {
@@ -95,7 +95,7 @@ fun PerfilScreen(
                         text = uiState.userName,
                         fontSize = 24.sp,
                         fontWeight = FontWeight.ExtraBold,
-                        color = Color.Black
+                        color = MaterialTheme.colorScheme.onSurface
                     )
                     
                     Spacer(modifier = Modifier.height(4.dp))
@@ -117,7 +117,7 @@ fun PerfilScreen(
                             .padding(horizontal = 16.dp, vertical = 8.dp)
                     ) {
                         Text(
-                            text = "Ingreso: ${formatter.format(uiState.monthlyIncome)}",
+                            text = "Ingreso: ${money(uiState.monthlyIncome)}",
                             color = PrimaryGreen,
                             fontWeight = FontWeight.Bold,
                             fontSize = 14.sp
@@ -133,7 +133,7 @@ fun PerfilScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .border(1.dp, Color.LightGray.copy(alpha = 0.3f), RoundedCornerShape(16.dp)),
-                        colors = CardDefaults.cardColors(containerColor = Color.White),
+                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
                         shape = RoundedCornerShape(16.dp)
                     ) {
                         Column {
@@ -262,7 +262,7 @@ fun MenuItem(
         
         Text(
             text = text,
-            color = Color.Black,
+            color = MaterialTheme.colorScheme.onSurface,
             fontSize = 16.sp,
             modifier = Modifier.weight(1f)
         )

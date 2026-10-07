@@ -58,7 +58,14 @@ class IngresosViewModel @Inject constructor(
         // Load extra incomes
         viewModelScope.launch {
             transactionRepository.getAllTransactions().collectLatest { allTx ->
-                val incomes = allTx.filter { it.type == "INCOME" }
+                val monthStart = Calendar.getInstance().apply {
+                    set(Calendar.DAY_OF_MONTH, 1)
+                    set(Calendar.HOUR_OF_DAY, 0)
+                    set(Calendar.MINUTE, 0)
+                    set(Calendar.SECOND, 0)
+                    set(Calendar.MILLISECOND, 0)
+                }.timeInMillis
+                val incomes = allTx.filter { it.type == "INCOME" && it.dateTimestamp >= monthStart }
                 val extraTotal = incomes.sumOf { it.amount }
                 _uiState.value = _uiState.value.copy(
                     extraIncomesList = incomes.sortedByDescending { it.dateTimestamp },
@@ -69,13 +76,26 @@ class IngresosViewModel @Inject constructor(
     }
 
     fun updateMonthlyIncome(newIncome: String) {
-        val incomeValue = newIncome.filter { it.isDigit() }.toDoubleOrNull() ?: return
+        val incomeValue = newIncome.filter { it.isDigit() }.toLongOrNull() ?: return
         viewModelScope.launch {
-            // Reusing setOnboardingCompleted to update the income, or create a specific function in repository
-            // Actually, we can just use setOnboardingCompleted for now or add a saveMonthlyIncome to repository.
-            // Let's check UserPreferencesRepository for a setter.
-            // It has `setOnboardingCompleted(income: String)` which sets both. It's safe to use.
-            preferencesRepository.setOnboardingCompleted(incomeValue.toLong().toString())
+            preferencesRepository.saveMonthlyIncome(incomeValue.toString())
+        }
+    }
+
+    fun addExtraIncome(amountText: String, description: String, dateTimestamp: Long) {
+        val amount = amountText.filter { it.isDigit() }.toDoubleOrNull() ?: return
+        if (amount <= 0) return
+        viewModelScope.launch {
+            transactionRepository.insertTransaction(
+                TransactionEntity(
+                    amount = amount,
+                    type = "INCOME",
+                    category = "Ingreso extra",
+                    description = description.trim(),
+                    dateTimestamp = dateTimestamp,
+                    isAntExpense = false
+                )
+            )
         }
     }
 }

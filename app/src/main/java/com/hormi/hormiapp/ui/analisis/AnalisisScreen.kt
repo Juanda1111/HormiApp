@@ -1,5 +1,6 @@
-﻿package com.hormi.hormiapp.ui.analisis
+package com.hormi.hormiapp.ui.analisis
 
+import com.hormi.hormiapp.util.rememberMoneyFormatter
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -44,10 +45,9 @@ fun AnalisisScreen(
     viewModel: AnalisisViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    val formatter = NumberFormat.getCurrencyInstance(Locale("es", "CO"))
-    formatter.maximumFractionDigits = 0
+    val money = rememberMoneyFormatter()
 
-    val backgroundColor = Color(0xFFF9F6F0)
+    val backgroundColor = MaterialTheme.colorScheme.background
 
     fun getCategoryIcon(categoryName: String): ImageVector {
         return when {
@@ -90,7 +90,7 @@ fun AnalisisScreen(
                             )
                             Spacer(modifier = Modifier.height(4.dp))
                             Text(
-                                text = formatter.format(uiState.totalAntExpenses),
+                                text = money(uiState.totalAntExpenses),
                                 color = Color(0xFF5D4037),
                                 fontSize = 36.sp,
                                 fontWeight = FontWeight.ExtraBold
@@ -107,7 +107,7 @@ fun AnalisisScreen(
                                     )
                                     Spacer(modifier = Modifier.width(4.dp))
                                     Text(
-                                        text = "${(uiState.percentageChange * 100).toInt()}% más que la semana anterior (${formatter.format(uiState.previousWeekExpenses)})",
+                                        text = "${(uiState.percentageChange * 100).toInt()}% más que la semana anterior (${money(uiState.previousWeekExpenses)})",
                                         color = Color(0xFFD32F2F),
                                         fontSize = 12.sp,
                                         fontWeight = FontWeight.Bold
@@ -125,7 +125,7 @@ fun AnalisisScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .border(1.dp, Color.LightGray.copy(alpha = 0.4f), RoundedCornerShape(16.dp)),
-                        colors = CardDefaults.cardColors(containerColor = Color.White),
+                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
                         shape = RoundedCornerShape(16.dp)
                     ) {
                         Column(modifier = Modifier.padding(16.dp)) {
@@ -133,7 +133,7 @@ fun AnalisisScreen(
                                 text = "Por categoría",
                                 fontSize = 18.sp,
                                 fontWeight = FontWeight.Bold,
-                                color = Color.Black
+                                color = MaterialTheme.colorScheme.onSurface
                             )
                             Spacer(modifier = Modifier.height(16.dp))
 
@@ -151,14 +151,14 @@ fun AnalisisScreen(
                                     Spacer(modifier = Modifier.width(8.dp))
                                     Text(
                                         text = stat.name,
-                                        color = Color.DarkGray,
+                                        color = MaterialTheme.colorScheme.onSurface,
                                         fontSize = 14.sp
                                     )
                                     Spacer(modifier = Modifier.weight(1f))
                                     Text(
-                                        text = "${formatter.format(stat.totalAmount)} · ${(stat.percentage * 100).toInt()}%",
+                                        text = "${money(stat.totalAmount)} · ${(stat.percentage * 100).toInt()}%",
                                         fontWeight = FontWeight.Bold,
-                                        color = Color.Black,
+                                        color = MaterialTheme.colorScheme.onSurface,
                                         fontSize = 14.sp
                                     )
                                 }
@@ -185,7 +185,7 @@ fun AnalisisScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .border(1.dp, Color.LightGray.copy(alpha = 0.4f), RoundedCornerShape(16.dp)),
-                        colors = CardDefaults.cardColors(containerColor = Color.White),
+                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
                         shape = RoundedCornerShape(16.dp)
                     ) {
                         Column(modifier = Modifier.padding(16.dp)) {
@@ -193,7 +193,7 @@ fun AnalisisScreen(
                                 text = "Top 3 de la semana",
                                 fontSize = 18.sp,
                                 fontWeight = FontWeight.Bold,
-                                color = Color.Black
+                                color = MaterialTheme.colorScheme.onSurface
                             )
                             Spacer(modifier = Modifier.height(16.dp))
 
@@ -239,14 +239,14 @@ fun AnalisisScreen(
                                     
                                     Text(
                                         text = "${stat.name} · ${stat.count} gasto${if (stat.count > 1) "s" else ""}",
-                                        color = Color.DarkGray,
+                                        color = MaterialTheme.colorScheme.onSurface,
                                         fontSize = 14.sp
                                     )
                                     Spacer(modifier = Modifier.weight(1f))
                                     Text(
-                                        text = formatter.format(stat.totalAmount),
+                                        text = money(stat.totalAmount),
                                         fontWeight = FontWeight.Bold,
-                                        color = Color.Black,
+                                        color = MaterialTheme.colorScheme.onSurface,
                                         fontSize = 14.sp
                                     )
                                 }
@@ -262,7 +262,7 @@ fun AnalisisScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .border(1.dp, Color.LightGray.copy(alpha = 0.4f), RoundedCornerShape(16.dp)),
-                        colors = CardDefaults.cardColors(containerColor = Color.White),
+                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
                         shape = RoundedCornerShape(16.dp)
                     ) {
                         Column(modifier = Modifier.padding(16.dp)) {
@@ -270,7 +270,7 @@ fun AnalisisScreen(
                                 text = "Si sigues a este ritmo...",
                                 fontSize = 18.sp,
                                 fontWeight = FontWeight.Bold,
-                                color = Color.Black
+                                color = MaterialTheme.colorScheme.onSurface
                             )
                             Spacer(modifier = Modifier.height(16.dp))
                             
@@ -290,8 +290,8 @@ fun AnalisisScreen(
                                         Text("Al mes", color = Color.Gray, fontSize = 12.sp)
                                         Spacer(modifier = Modifier.height(4.dp))
                                         Text(
-                                            text = formatter.format(uiState.projectedMonthly),
-                                            color = Color.Black,
+                                            text = money(uiState.projectedMonthly),
+                                            color = MaterialTheme.colorScheme.onSurface,
                                             fontWeight = FontWeight.Bold,
                                             fontSize = 18.sp
                                         )
@@ -310,8 +310,8 @@ fun AnalisisScreen(
                                         Text("Al año", color = Color.Gray, fontSize = 12.sp)
                                         Spacer(modifier = Modifier.height(4.dp))
                                         Text(
-                                            text = formatter.format(uiState.projectedYearly),
-                                            color = Color.Black,
+                                            text = money(uiState.projectedYearly),
+                                            color = MaterialTheme.colorScheme.onSurface,
                                             fontWeight = FontWeight.Bold,
                                             fontSize = 18.sp
                                         )
@@ -331,9 +331,9 @@ fun AnalisisScreen(
                                 )
                                 Spacer(modifier = Modifier.width(8.dp))
                                 Text(
-                                    text = "A la mitad, ahorrarías ${formatter.format(uiState.potentialSavings)} al año",
+                                    text = "A la mitad, ahorrarías ${money(uiState.potentialSavings)} al año",
                                     fontWeight = FontWeight.Bold,
-                                    color = Color.Black,
+                                    color = MaterialTheme.colorScheme.onSurface,
                                     fontSize = 14.sp
                                 )
                             }

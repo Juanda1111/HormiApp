@@ -1,5 +1,6 @@
-﻿package com.hormi.hormiapp.ui.gastos
+package com.hormi.hormiapp.ui.gastos
 
+import com.hormi.hormiapp.util.rememberMoneyFormatter
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -31,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.hormi.hormiapp.ui.components.HormiAppHeader
+import com.hormi.hormiapp.ui.components.categoryIcon
 import com.hormi.hormiapp.ui.theme.AccentYellow
 import com.hormi.hormiapp.ui.theme.PrimaryGreen
 import java.text.NumberFormat
@@ -45,10 +47,9 @@ fun GastosScreen(
     viewModel: GastosViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    val formatter = NumberFormat.getCurrencyInstance(Locale("es", "CO"))
-    formatter.maximumFractionDigits = 0
+    val money = rememberMoneyFormatter()
 
-    val backgroundColor = Color(0xFFF9F6F0)
+    val backgroundColor = MaterialTheme.colorScheme.background
 
     Box(modifier = modifier.fillMaxSize().background(backgroundColor)) {
         Column(modifier = Modifier.fillMaxSize()) {
@@ -67,25 +68,30 @@ fun GastosScreen(
                     .padding(horizontal = 16.dp, vertical = 8.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                Button(
-                    onClick = { /* TODO */ },
-                    colors = ButtonDefaults.buttonColors(containerColor = PrimaryGreen),
-                    shape = RoundedCornerShape(8.dp),
-                    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
-                    modifier = Modifier.height(36.dp)
-                ) {
-                    Text("Esta semana", color = Color.White, fontSize = 14.sp)
-                }
-
-                OutlinedButton(
-                    onClick = { /* TODO */ },
-                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.Gray),
-                    shape = RoundedCornerShape(8.dp),
-                    border = BorderStroke(1.dp, Color.LightGray),
-                    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
-                    modifier = Modifier.height(36.dp)
-                ) {
-                    Text("Este mes", color = Color.Gray, fontSize = 14.sp)
+                listOf(GastosFilter.SEMANA to "Esta semana", GastosFilter.MES to "Este mes").forEach { (filter, label) ->
+                    val selected = uiState.filter == filter
+                    if (selected) {
+                        Button(
+                            onClick = { viewModel.setFilter(filter) },
+                            colors = ButtonDefaults.buttonColors(containerColor = PrimaryGreen),
+                            shape = RoundedCornerShape(8.dp),
+                            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+                            modifier = Modifier.height(36.dp)
+                        ) {
+                            Text(label, color = Color.White, fontSize = 14.sp)
+                        }
+                    } else {
+                        OutlinedButton(
+                            onClick = { viewModel.setFilter(filter) },
+                            colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.Gray),
+                            shape = RoundedCornerShape(8.dp),
+                            border = BorderStroke(1.dp, Color.LightGray),
+                            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+                            modifier = Modifier.height(36.dp)
+                        ) {
+                            Text(label, color = Color.Gray, fontSize = 14.sp)
+                        }
+                    }
                 }
             }
 
@@ -101,7 +107,7 @@ fun GastosScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .border(1.dp, Color.LightGray.copy(alpha = 0.3f), RoundedCornerShape(16.dp)),
-                        colors = CardDefaults.cardColors(containerColor = Color.White),
+                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
                         shape = RoundedCornerShape(16.dp)
                     ) {
                         Row(
@@ -115,8 +121,8 @@ fun GastosScreen(
                                 Text(text = "Total", color = Color.Gray, fontSize = 12.sp)
                                 Spacer(modifier = Modifier.height(4.dp))
                                 Text(
-                                    text = formatter.format(uiState.totalExpenses),
-                                    color = Color.Black,
+                                    text = money(uiState.totalExpenses),
+                                    color = MaterialTheme.colorScheme.onSurface,
                                     fontSize = 24.sp,
                                     fontWeight = FontWeight.ExtraBold
                                 )
@@ -145,7 +151,7 @@ fun GastosScreen(
                                 }
                                 Spacer(modifier = Modifier.height(4.dp))
                                 Text(
-                                    text = formatter.format(uiState.totalAntExpenses),
+                                    text = money(uiState.totalAntExpenses),
                                     color = Color(0xFFC48615), // Naranja oscuro para hormigas
                                     fontSize = 24.sp,
                                     fontWeight = FontWeight.ExtraBold
@@ -154,6 +160,17 @@ fun GastosScreen(
                         }
                     }
                     Spacer(modifier = Modifier.height(24.dp))
+                }
+
+                if (uiState.groupedExpenses.isEmpty()) {
+                    item {
+                        Text(
+                            text = "No hay gastos en este período.",
+                            color = Color.Gray,
+                            fontSize = 14.sp,
+                            modifier = Modifier.padding(vertical = 16.dp)
+                        )
+                    }
                 }
 
                 // Lista agrupada
@@ -175,7 +192,7 @@ fun GastosScreen(
                                 fontSize = 16.sp
                             )
                             Text(
-                                text = formatter.format(dayTotal),
+                                text = money(dayTotal),
                                 color = Color.Gray,
                                 fontSize = 14.sp
                             )
@@ -192,16 +209,9 @@ fun GastosScreen(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             // Icono según categoría
-                            val (icon, bgColor) = when {
-                                transaction.category.contains("Café", ignoreCase = true) || transaction.category.contains("Hormiga", ignoreCase = true) -> 
-                                    Icons.Default.LocalCafe to PrimaryGreen.copy(alpha = 0.15f)
-                                transaction.category.contains("Alimentación", ignoreCase = true) || transaction.category.contains("Comida", ignoreCase = true) -> 
-                                    Icons.Default.Fastfood to PrimaryGreen.copy(alpha = 0.15f)
-                                transaction.category.contains("Entretenimiento", ignoreCase = true) || transaction.category.contains("Salidas", ignoreCase = true) -> 
-                                    Icons.Default.Movie to PrimaryGreen.copy(alpha = 0.15f)
-                                else -> Icons.Default.ShoppingCart to PrimaryGreen.copy(alpha = 0.15f)
-                            }
-                            
+                            val icon = categoryIcon(transaction.category)
+                            val bgColor = PrimaryGreen.copy(alpha = 0.15f)
+
                             Box(
                                 modifier = Modifier
                                     .size(48.dp)
@@ -223,7 +233,7 @@ fun GastosScreen(
                                 Text(
                                     text = transaction.category,
                                     fontWeight = FontWeight.Bold,
-                                    color = Color.Black,
+                                    color = MaterialTheme.colorScheme.onSurface,
                                     fontSize = 16.sp
                                 )
                                 Text(
@@ -236,9 +246,9 @@ fun GastosScreen(
                             // Monto y Tag
                             Column(horizontalAlignment = Alignment.End) {
                                 Text(
-                                    text = "-$ ${formatter.format(transaction.amount).replace("$", "").trim()}",
+                                    text = "-${money(transaction.amount)}",
                                     fontWeight = FontWeight.Bold,
-                                    color = Color.Black,
+                                    color = MaterialTheme.colorScheme.onSurface,
                                     fontSize = 16.sp
                                 )
                                 
