@@ -1,5 +1,6 @@
 package com.hormi.hormiapp.ui.perfil
 
+import com.hormi.hormiapp.util.PRIVACY_POLICY_URL
 import com.hormi.hormiapp.util.rememberMoneyFormatter
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -209,6 +210,13 @@ fun PerfilScreen(
                             color = Color.Gray,
                             fontSize = 12.sp
                         )
+                    }
+                    val uriHandler = androidx.compose.ui.platform.LocalUriHandler.current
+                    androidx.compose.material3.TextButton(
+                        onClick = { uriHandler.openUri(PRIVACY_POLICY_URL) },
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(text = "Política de privacidad", color = PrimaryGreen, fontSize = 12.sp, fontWeight = FontWeight.Bold)
                     }
                 }
             }

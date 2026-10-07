@@ -93,7 +93,7 @@ Desde terminal:
 - [x] Keystore de firma creado (guardado fuera del repositorio)
 - [x] `.aab` generado (`./gradlew bundleRelease`)
 - [ ] Ficha de Google Play (nombre, descripción, capturas, ícono)
-- [ ] Política de privacidad
+- [x] Política de privacidad: [`PRIVACY.md`](PRIVACY.md) (enlazada desde Perfil y Créditos de la app)
 - [ ] Aplicación publicada: _enlace pendiente_
 
 ### Generar el `.aab` firmado
