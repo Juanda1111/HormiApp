@@ -46,20 +46,22 @@ class AnalisisViewModel @Inject constructor(
     private fun loadAnalysisData() {
         viewModelScope.launch {
             transactionRepository.getAllTransactions().collectLatest { transactions ->
-                // Filtrar solo gastos hormiga
-                val antExpenses = transactions.filter { it.isAntExpense }
-                
+                // Filtrar solo gastos hormiga para las proyecciones
+                val antExpenses = transactions.filter { it.isAntExpense && it.type == "EXPENSE" }
                 val totalAnt = antExpenses.sumOf { it.amount }
                 
-                // Agrupar por categoría
-                val grouped = antExpenses.groupBy { it.category }
+                // Agrupar por categoría todos los gastos (no solo hormiga)
+                val allExpenses = transactions.filter { it.type == "EXPENSE" }
+                val totalExpenses = allExpenses.sumOf { it.amount }
+
+                val grouped = allExpenses.groupBy { it.category }
                 val stats = grouped.map { (category, list) ->
                     val sum = list.sumOf { it.amount }
                     CategoryStat(
                         name = category,
                         totalAmount = sum,
                         count = list.size,
-                        percentage = if (totalAnt > 0) (sum / totalAnt).toFloat() else 0f
+                        percentage = if (totalExpenses > 0) (sum / totalExpenses).toFloat() else 0f
                     )
                 }.sortedByDescending { it.totalAmount }
                 
