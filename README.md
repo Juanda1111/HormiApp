@@ -89,14 +89,27 @@ Desde terminal:
 
 ## Publicación
 
-> Completar a medida que avance.
-
-- [ ] Probado en dispositivo físico
-- [ ] Keystore de firma creado (guardado fuera del repositorio)
-- [ ] `.aab` generado (`./gradlew bundleRelease`)
+- [x] Probado en dispositivo físico
+- [x] Keystore de firma creado (guardado fuera del repositorio)
+- [x] `.aab` generado (`./gradlew bundleRelease`)
 - [ ] Ficha de Google Play (nombre, descripción, capturas, ícono)
 - [ ] Política de privacidad
 - [ ] Aplicación publicada: _enlace pendiente_
+
+### Generar el `.aab` firmado
+
+1. Crear el archivo `keystore.properties` en la raíz del proyecto (está en `.gitignore`, **nunca se sube**):
+
+   ```properties
+   storeFile=C:/ruta/a/hormiapp-upload.jks
+   storePassword=...
+   keyAlias=hormiapp
+   keyPassword=...
+   ```
+
+2. Ejecutar `./gradlew bundleRelease`. El resultado queda en `app/build/outputs/bundle/release/app-release.aab`.
+
+El build de release usa R8 (reduce y ofusca el código). Las reglas para que Room funcione están en `app/src/main/keepRules/rules.keep`. Sin `keystore.properties` el release se genera sin firmar. La llave de firma debe guardarse con copia fuera del equipo: no se puede recuperar si se pierde.
 
 ## Flujo de trabajo del equipo
 
