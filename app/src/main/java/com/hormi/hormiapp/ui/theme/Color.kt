@@ -19,3 +19,6 @@ val BackgroundDark = Color(0xFF121212)
 val SurfaceDark = Color(0xFF1E1E1E)
 val TextPrimaryDark = Color(0xFFF8F9FA)
 val TextSecondaryDark = Color(0xFFADB5BD)
+
+// Fondo claro para tarjetas/etiquetas amarillas: se mantiene igual en tema claro y oscuro para que el texto café siga legible
+val AntBackground = Color(0xFFF2E4C0)

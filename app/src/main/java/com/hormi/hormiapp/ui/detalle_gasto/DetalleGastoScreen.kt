@@ -1,5 +1,6 @@
 package com.hormi.hormiapp.ui.detalle_gasto
 
+import com.hormi.hormiapp.ui.theme.AntBackground
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -136,7 +137,7 @@ fun DetalleGastoScreen(
                         Row(
                             modifier = Modifier
                                 .clip(RoundedCornerShape(12.dp))
-                                .background(AccentYellow.copy(alpha = 0.4f))
+                                .background(AntBackground)
                                 .padding(horizontal = 12.dp, vertical = 6.dp)
                                 .align(Alignment.CenterHorizontally),
                             verticalAlignment = Alignment.CenterVertically

@@ -1,5 +1,6 @@
 package com.hormi.hormiapp.ui.inicio
 
+import com.hormi.hormiapp.ui.theme.AntBackground
 import com.hormi.hormiapp.util.rememberMoneyFormatter
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -190,7 +191,7 @@ fun InicioScreen(
                 item {
                     Card(
                         modifier = Modifier.fillMaxWidth(),
-                        colors = CardDefaults.cardColors(containerColor = AccentYellow.copy(alpha = 0.4f)),
+                        colors = CardDefaults.cardColors(containerColor = AntBackground),
                         shape = RoundedCornerShape(12.dp)
                     ) {
                         Row(
@@ -374,7 +375,7 @@ fun InicioScreen(
                                 Row(
                                     modifier = Modifier
                                         .clip(RoundedCornerShape(8.dp))
-                                        .background(AccentYellow.copy(alpha = 0.4f))
+                                        .background(AntBackground)
                                         .padding(horizontal = 6.dp, vertical = 2.dp),
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {

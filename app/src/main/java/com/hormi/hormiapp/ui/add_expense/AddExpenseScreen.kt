@@ -1,6 +1,7 @@
 package com.hormi.hormiapp.ui.add_expense
 
 import com.hormi.hormiapp.util.ThousandsVisualTransformation
+import com.hormi.hormiapp.ui.theme.AntBackground
 import com.hormi.hormiapp.util.LocalCurrency
 import com.hormi.hormiapp.util.currencySymbol
 import com.hormi.hormiapp.util.rememberMoneyFormatter
@@ -189,7 +190,7 @@ fun AddExpenseScreen(
                         Row(
                             modifier = Modifier
                                 .clip(RoundedCornerShape(8.dp))
-                                .background(AccentYellow.copy(alpha = 0.4f))
+                                .background(AntBackground)
                                 .padding(horizontal = 8.dp, vertical = 4.dp),
                             verticalAlignment = Alignment.CenterVertically
                         ) {

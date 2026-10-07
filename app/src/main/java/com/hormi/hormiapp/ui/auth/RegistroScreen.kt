@@ -38,7 +38,7 @@ fun RegistroScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.White)
+            .background(MaterialTheme.colorScheme.background)
             .padding(horizontal = 16.dp)
             .verticalScroll(rememberScrollState()) // <- ESTO PERMITE SCROLL SI EL TECLADO TAPA
     ) {
@@ -55,7 +55,7 @@ fun RegistroScreen(
             text = "Crea tu cuenta",
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold,
-            color = Color.Black,
+            color = MaterialTheme.colorScheme.onSurface,
             modifier = Modifier.fillMaxWidth(),
             textAlign = TextAlign.Center
         )
@@ -82,7 +82,7 @@ fun RegistroScreen(
         }
 
         // Nombre
-        Text(text = "Nombre", fontSize = 12.sp, color = Color.DarkGray)
+        Text(text = "Nombre", fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurface)
         Spacer(modifier = Modifier.height(4.dp))
         OutlinedTextField(
             value = uiState.nombre,
@@ -92,8 +92,8 @@ fun RegistroScreen(
             singleLine = true,
             shape = RoundedCornerShape(12.dp),
             colors = TextFieldDefaults.colors(
-                focusedTextColor = Color.Black,
-                unfocusedTextColor = Color.Black,
+                focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
                 focusedIndicatorColor = PrimaryGreen,
                 unfocusedIndicatorColor = Color.LightGray,
                 unfocusedContainerColor = Color.Transparent,
@@ -104,7 +104,7 @@ fun RegistroScreen(
         Spacer(modifier = Modifier.height(16.dp))
 
         // PIN
-        Text(text = "PIN (4 dígitos)", fontSize = 12.sp, color = Color.DarkGray)
+        Text(text = "PIN (4 dígitos)", fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurface)
         Spacer(modifier = Modifier.height(4.dp))
         OutlinedTextField(
             value = uiState.pin,
@@ -125,8 +125,8 @@ fun RegistroScreen(
                 }
             },
             colors = TextFieldDefaults.colors(
-                focusedTextColor = Color.Black,
-                unfocusedTextColor = Color.Black,
+                focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
                 focusedIndicatorColor = PrimaryGreen,
                 unfocusedIndicatorColor = Color.LightGray,
                 unfocusedContainerColor = Color.Transparent,
@@ -137,7 +137,7 @@ fun RegistroScreen(
         Spacer(modifier = Modifier.height(16.dp))
 
         // Confirmar PIN
-        Text(text = "Confirmar tu PIN", fontSize = 12.sp, color = Color.DarkGray)
+        Text(text = "Confirmar tu PIN", fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurface)
         Spacer(modifier = Modifier.height(4.dp))
         OutlinedTextField(
             value = uiState.confirmPin,
@@ -158,8 +158,8 @@ fun RegistroScreen(
                 }
             },
             colors = TextFieldDefaults.colors(
-                focusedTextColor = Color.Black,
-                unfocusedTextColor = Color.Black,
+                focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
                 focusedIndicatorColor = PrimaryGreen,
                 unfocusedIndicatorColor = Color.LightGray,
                 unfocusedContainerColor = Color.Transparent,
@@ -177,7 +177,7 @@ fun RegistroScreen(
         Spacer(modifier = Modifier.height(16.dp))
 
         // Pregunta de seguridad
-        Text(text = "Pregunta de seguridad: ¿Cuál es tu mayor sueño?", fontSize = 12.sp, color = Color.DarkGray)
+        Text(text = "Pregunta de seguridad: ¿Cuál es tu mayor sueño?", fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurface)
         Spacer(modifier = Modifier.height(4.dp))
         OutlinedTextField(
             value = uiState.securityAnswer,
@@ -187,8 +187,8 @@ fun RegistroScreen(
             singleLine = true,
             shape = RoundedCornerShape(12.dp),
             colors = TextFieldDefaults.colors(
-                focusedTextColor = Color.Black,
-                unfocusedTextColor = Color.Black,
+                focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
                 focusedIndicatorColor = PrimaryGreen,
                 unfocusedIndicatorColor = Color.LightGray,
                 unfocusedContainerColor = Color.Transparent,

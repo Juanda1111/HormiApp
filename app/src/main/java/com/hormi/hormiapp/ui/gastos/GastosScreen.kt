@@ -1,5 +1,6 @@
 package com.hormi.hormiapp.ui.gastos
 
+import com.hormi.hormiapp.ui.theme.AntBackground
 import com.hormi.hormiapp.util.rememberMoneyFormatter
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -257,7 +258,7 @@ fun GastosScreen(
                                     Row(
                                         modifier = Modifier
                                             .clip(RoundedCornerShape(8.dp))
-                                            .background(AccentYellow.copy(alpha = 0.4f))
+                                            .background(AntBackground)
                                             .padding(horizontal = 6.dp, vertical = 2.dp),
                                         verticalAlignment = Alignment.CenterVertically
                                     ) {
