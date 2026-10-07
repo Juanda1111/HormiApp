@@ -147,6 +147,9 @@ fun HormiAppNavigation(
                     },
                     onNavigateToMetas = {
                         navController.navigate(Screen.Metas.route)
+                    },
+                    onNavigateToConfiguracion = {
+                        navController.navigate(Screen.Configuracion.route)
                     }
                 )
             }
@@ -196,6 +199,13 @@ fun HormiAppNavigation(
                     },
                     onNavigateToAbonar = { id ->
                         // TODO
+                    }
+                )
+            }
+            composable(route = Screen.Configuracion.route) {
+                com.hormi.hormiapp.ui.configuracion.ConfiguracionScreen(
+                    onBackClick = {
+                        navController.popBackStack()
                     }
                 )
             }

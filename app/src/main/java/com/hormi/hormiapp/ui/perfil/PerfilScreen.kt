@@ -42,6 +42,7 @@ fun PerfilScreen(
     onNavigateToAddExpense: () -> Unit = {},
     onNavigateToIngresos: () -> Unit = {},
     onNavigateToMetas: () -> Unit = {},
+    onNavigateToConfiguracion: () -> Unit = {},
     viewModel: PerfilViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -147,7 +148,8 @@ fun PerfilScreen(
                             HorizontalDivider(color = Color.LightGray.copy(alpha = 0.2f))
                             MenuItem(
                                 icon = Icons.Default.Settings,
-                                text = "Configuración"
+                                text = "Configuración",
+                                onClick = onNavigateToConfiguracion
                             )
                             HorizontalDivider(color = Color.LightGray.copy(alpha = 0.2f))
                             MenuItem(
