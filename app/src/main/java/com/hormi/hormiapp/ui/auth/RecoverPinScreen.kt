@@ -39,6 +39,7 @@ fun RecoverPinScreen(
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
             .padding(horizontal = 16.dp)
+            .imePadding()
             .verticalScroll(rememberScrollState())
     ) {
         // Top Bar

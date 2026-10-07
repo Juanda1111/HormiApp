@@ -44,6 +44,7 @@ fun OnboardingScreen(
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background) // Color de fondo del figma, casi blanco
             .padding(horizontal = 16.dp)
+            .imePadding()
             .verticalScroll(rememberScrollState())
     ) {
         // Header
