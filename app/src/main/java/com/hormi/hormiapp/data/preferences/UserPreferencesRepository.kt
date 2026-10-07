@@ -26,6 +26,7 @@ class UserPreferencesRepository @Inject constructor(
         val SECURITY_ANSWER = stringPreferencesKey("security_answer")
         val HAS_COMPLETED_ONBOARDING = booleanPreferencesKey("has_completed_onboarding")
         val MONTHLY_INCOME = stringPreferencesKey("monthly_income")
+        val REGISTERED_AT = androidx.datastore.preferences.core.longPreferencesKey("registered_at")
         val CURRENCY = stringPreferencesKey("currency")
         val REMINDER_ENABLED = booleanPreferencesKey("reminder_enabled")
         val REMINDER_TIME = stringPreferencesKey("reminder_time")
@@ -49,6 +50,9 @@ class UserPreferencesRepository @Inject constructor(
         preferences[PreferencesKeys.ANT_EXPENSE_THRESHOLD] ?: 15000.0
     }
 
+    /** Momento en que se creó la cuenta (millis), o null en cuentas creadas antes de guardar este dato. */
+    val registeredAt: Flow<Long?> = context.dataStore.data.map { it[PreferencesKeys.REGISTERED_AT] }
+
     val currency: Flow<String> = context.dataStore.data.map { it[PreferencesKeys.CURRENCY] ?: "COP $" }
 
     val reminderEnabled: Flow<Boolean> = context.dataStore.data.map { it[PreferencesKeys.REMINDER_ENABLED] ?: false }
@@ -62,6 +66,7 @@ class UserPreferencesRepository @Inject constructor(
             preferences[PreferencesKeys.USER_NAME] = name
             preferences[PreferencesKeys.USER_PIN] = pin
             preferences[PreferencesKeys.SECURITY_ANSWER] = answer
+            preferences[PreferencesKeys.REGISTERED_AT] = System.currentTimeMillis()
         }
     }
 
@@ -105,5 +110,12 @@ class UserPreferencesRepository @Inject constructor(
 
     suspend fun clearAll() {
         context.dataStore.edit { it.clear() }
+    }
+
+    /** Para cuentas anteriores a este dato: fija la fecha la primera vez que se consulta. */
+    suspend fun ensureRegisteredAt() {
+        context.dataStore.edit {
+            if (it[PreferencesKeys.REGISTERED_AT] == null) it[PreferencesKeys.REGISTERED_AT] = System.currentTimeMillis()
+        }
     }
 }

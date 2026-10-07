@@ -102,7 +102,7 @@ fun PerfilScreen(
                     
                     // Desde
                     Text(
-                        text = "Usando HormiApp desde 1 oct 2026", // Mockeado temporalmente
+                        text = if (uiState.memberSince.isNotEmpty()) "Usando HormiApp desde ${uiState.memberSince}" else "",
                         fontSize = 14.sp,
                         color = Color.Gray
                     )

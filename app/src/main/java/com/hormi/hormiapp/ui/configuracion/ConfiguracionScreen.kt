@@ -1,5 +1,6 @@
 package com.hormi.hormiapp.ui.configuracion
 
+import com.hormi.hormiapp.util.ThousandsVisualTransformation
 import androidx.compose.runtime.*
 import com.hormi.hormiapp.util.LocalCurrency
 import com.hormi.hormiapp.util.currencySymbol
@@ -371,6 +372,7 @@ private fun NumberInputDialog(
                     label = { Text(label) },
                     prefix = { Text("${currencySymbol(LocalCurrency.current)} ") },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    visualTransformation = ThousandsVisualTransformation(),
                     singleLine = true
                 )
                 Text(helper(value), color = Color.Gray, fontSize = 13.sp)

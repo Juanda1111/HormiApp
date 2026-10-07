@@ -1,5 +1,6 @@
 package com.hormi.hormiapp.ui.ingresos
 
+import com.hormi.hormiapp.util.ThousandsVisualTransformation
 import com.hormi.hormiapp.util.LocalCurrency
 import com.hormi.hormiapp.util.currencySymbol
 import com.hormi.hormiapp.util.rememberMoneyFormatter
@@ -88,6 +89,7 @@ fun IngresosScreen(
                         value = addAmount,
                         onValueChange = { addAmount = it.filter { c -> c.isDigit() }.take(12) },
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    visualTransformation = ThousandsVisualTransformation(),
                         label = { Text("Monto") },
                         prefix = { Text("${currencySymbol(LocalCurrency.current)} ") },
                         singleLine = true
@@ -127,6 +129,7 @@ fun IngresosScreen(
                     value = editIncomeValue,
                     onValueChange = { editIncomeValue = it },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    visualTransformation = ThousandsVisualTransformation(),
                     label = { Text("Nuevo monto") },
                     prefix = { Text("${currencySymbol(LocalCurrency.current)} ") },
                     singleLine = true

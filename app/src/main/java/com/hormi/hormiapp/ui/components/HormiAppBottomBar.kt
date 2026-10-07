@@ -42,7 +42,7 @@ fun HormiAppBottomBar(navController: NavController) {
 
     if (showBottomBar) {
         NavigationBar(
-            containerColor = Color.White
+            containerColor = androidx.compose.material3.MaterialTheme.colorScheme.surface
         ) {
             items.forEach { item ->
                 NavigationBarItem(
