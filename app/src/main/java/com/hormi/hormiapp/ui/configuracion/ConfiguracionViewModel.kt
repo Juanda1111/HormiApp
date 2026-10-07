@@ -3,7 +3,7 @@ package com.hormi.hormiapp.ui.configuracion
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.hormi.hormiapp.data.local.HormiAppDatabase
+import com.hormi.hormiapp.domain.usecase.preferences.ClearAllDataUseCase
 import com.hormi.hormiapp.data.preferences.UserPreferencesRepository
 import com.hormi.hormiapp.reminder.ReminderScheduler
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -32,7 +32,7 @@ data class ConfiguracionUiState(
 class ConfiguracionViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
     private val userPreferencesRepository: UserPreferencesRepository,
-    private val database: HormiAppDatabase
+    private val clearAllDataUseCase: ClearAllDataUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ConfiguracionUiState())
@@ -106,9 +106,7 @@ class ConfiguracionViewModel @Inject constructor(
     /** Borra transacciones, metas y todas las preferencias (incluida la cuenta local). */
     fun deleteAllData(onDone: () -> Unit) {
         viewModelScope.launch {
-            ReminderScheduler.cancel(context)
-            withContext(Dispatchers.IO) { database.clearAllTables() }
-            userPreferencesRepository.clearAll()
+            clearAllDataUseCase()
             onDone()
         }
     }
