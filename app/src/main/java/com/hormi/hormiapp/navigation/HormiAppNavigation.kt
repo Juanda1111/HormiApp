@@ -72,8 +72,11 @@ fun HormiAppNavigation(
                             popUpTo(0) { inclusive = true }
                         }
                     },
-                    onBackClick = {
-                        navController.popBackStack()
+                    // Si no hay pantalla anterior (primera cuenta del dispositivo), no se muestra la flecha
+                    onBackClick = if (navController.previousBackStackEntry != null) {
+                        { navController.popBackStack() }
+                    } else {
+                        null
                     }
                 )
             }
@@ -94,9 +97,8 @@ fun HormiAppNavigation(
                             popUpTo(Screen.Onboarding.route) { inclusive = true }
                         }
                     },
-                    onBackClick = {
-                        navController.popBackStack()
-                    }
+                    // Tras crear la cuenta no se vuelve atrás: el ingreso mensual es parte del registro
+                    onBackClick = null
                 )
             }
             

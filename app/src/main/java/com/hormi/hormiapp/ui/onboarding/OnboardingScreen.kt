@@ -34,7 +34,7 @@ import java.util.Locale
 @Composable
 fun OnboardingScreen(
     onFinishOnboarding: () -> Unit,
-    onBackClick: () -> Unit,
+    onBackClick: (() -> Unit)? = null,
     viewModel: OnboardingViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()

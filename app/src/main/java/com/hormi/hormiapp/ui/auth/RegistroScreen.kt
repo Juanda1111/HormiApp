@@ -31,7 +31,7 @@ import com.hormi.hormiapp.ui.theme.PrimaryGreen
 fun RegistroScreen(
     onRegisterSuccess: () -> Unit,
     onDemoStarted: () -> Unit = {},
-    onBackClick: () -> Unit,
+    onBackClick: (() -> Unit)? = null,
     viewModel: RegistroViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
