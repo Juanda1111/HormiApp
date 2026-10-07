@@ -42,59 +42,9 @@ class InicioViewModel @Inject constructor(
                 val baseIncome = incomeString?.toDoubleOrNull() ?: 0.0
 
                 transactionRepository.getAllTransactions().collectLatest { transactions ->
-                    val totalExpenses = transactions
-                        .filter { it.type == "EXPENSE" }
-                        .sumOf { it.amount }
-
-                    val extraIncome = transactions
-                        .filter { it.type == "INCOME" }
-                        .sumOf { it.amount }
-                        
-                    val totalIncome = baseIncome + extraIncome
-                    val availableBalance = totalIncome - totalExpenses
-                    
-                    // Cálculo de Gastos Hormiga
-                    val antExpenses = transactions.filter { it.isAntExpense }
-                    val totalAntExpensesAmount = antExpenses.sumOf { it.amount }
-                    
-                    // Encontrar la mayor categoría de gasto hormiga
-                    val groupedAntExpenses = antExpenses.groupBy { it.category }
-                    var highestCategory = "Ninguno"
-                    var highestCategoryCount = 0
-                    var highestCategoryTotal = 0.0
-                    
-                    if (groupedAntExpenses.isNotEmpty()) {
-                        val maxEntry = groupedAntExpenses.maxByOrNull { entry -> entry.value.sumOf { it.amount } }
-                        if (maxEntry != null) {
-                            highestCategory = maxEntry.key
-                            highestCategoryCount = maxEntry.value.size
-                            highestCategoryTotal = maxEntry.value.sumOf { it.amount }
-                        }
-                    }
-                    
-                    // Presupuesto semanal (mock: asume que es el 25% del ingreso total, y se gasta según los expenses de la última semana)
-                    val weeklyBudget = totalIncome * 0.25
-                    // Para simplificar, tomamos todos los gastos como de esta semana en el demo
-                    val weeklySpent = totalExpenses
-                    val weeklyRemaining = (weeklyBudget - weeklySpent).coerceAtLeast(0.0)
-                    val weeklyPercent = if (weeklyBudget > 0) (weeklySpent / weeklyBudget).coerceAtMost(1.0) else 0.0
-
-                    _uiState.value = _uiState.value.copy(
-                        availableBalance = availableBalance,
-                        totalIncome = totalIncome,
-                        totalExpenses = totalExpenses,
-                        
-                        weeklyBudget = weeklyBudget,
-                        weeklySpent = weeklySpent,
-                        weeklyRemaining = weeklyRemaining,
-                        weeklyPercent = weeklyPercent.toFloat(),
-                        
-                        highestAntExpenseCategory = highestCategory,
-                        highestAntExpenseCount = highestCategoryCount,
-                        highestAntExpenseTotal = highestCategoryTotal,
-                        
-                        recentTransactions = transactions.take(5) // solo los últimos 5
-                    )
+                    // Se conserva el nombre de usuario que ya cargó loadUserName()
+                    _uiState.value = DashboardCalculator.calculate(baseIncome, transactions)
+                        .copy(userName = _uiState.value.userName)
                 }
             }
         }

@@ -307,7 +307,7 @@ fun AnalisisScreen(
                                     modifier = Modifier
                                         .weight(1f)
                                         .clip(RoundedCornerShape(12.dp))
-                                        .background(Color(0xFFF7F5F0))
+                                        .background(MaterialTheme.colorScheme.background)
                                         .padding(12.dp)
                                 ) {
                                     Column {
@@ -327,7 +327,7 @@ fun AnalisisScreen(
                                     modifier = Modifier
                                         .weight(1f)
                                         .clip(RoundedCornerShape(12.dp))
-                                        .background(Color(0xFFF7F5F0))
+                                        .background(MaterialTheme.colorScheme.background)
                                         .padding(12.dp)
                                 ) {
                                     Column {
