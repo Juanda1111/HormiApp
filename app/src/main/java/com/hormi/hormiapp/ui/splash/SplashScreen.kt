@@ -71,27 +71,27 @@ fun SplashScreen(
                 painter = painterResource(id = R.drawable.hormiapp_logo),
                 contentDescription = "Logo HormiApp",
                 modifier = Modifier
-                    .size(100.dp)
+                    .size(140.dp)
                     .clip(CircleShape)
             )
             
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(32.dp))
             
             // Título
             Text(
                 text = "HormiApp",
                 color = Color.White,
-                fontSize = 32.sp,
+                fontSize = 42.sp,
                 fontWeight = FontWeight.Bold
             )
             
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(12.dp))
             
             // Subtítulo
             Text(
                 text = "Cuida cada peso, hasta el más pequeño",
-                color = Color.White.copy(alpha = 0.8f),
-                fontSize = 14.sp
+                color = Color.White.copy(alpha = 0.9f),
+                fontSize = 18.sp
             )
         }
 
