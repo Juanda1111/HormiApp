@@ -103,6 +103,7 @@ fun AddExpenseScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(backgroundColor)
+            .imePadding()
             // Se elimina .systemBarsPadding() para evitar que baje el header extra, ya que Scaffold lo provee
     ) {
         HormiAppHeader(
