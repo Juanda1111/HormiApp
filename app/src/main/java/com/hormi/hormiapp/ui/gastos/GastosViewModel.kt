@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -24,14 +25,40 @@ class GastosViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(GastosUiState())
     val uiState: StateFlow<GastosUiState> = _uiState.asStateFlow()
 
+    private val filter = MutableStateFlow(GastosFilter.SEMANA)
+
     init {
         loadGastos()
     }
 
+    fun setFilter(newFilter: GastosFilter) {
+        filter.value = newFilter
+    }
+
+    private fun startOf(filter: GastosFilter): Long {
+        val cal = Calendar.getInstance().apply {
+            set(Calendar.HOUR_OF_DAY, 0)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
+        }
+        when (filter) {
+            GastosFilter.SEMANA -> {
+                // La semana empieza el lunes
+                val daysSinceMonday = (cal.get(Calendar.DAY_OF_WEEK) + 5) % 7
+                cal.add(Calendar.DAY_OF_YEAR, -daysSinceMonday)
+            }
+            GastosFilter.MES -> cal.set(Calendar.DAY_OF_MONTH, 1)
+        }
+        return cal.timeInMillis
+    }
+
     private fun loadGastos() {
         viewModelScope.launch {
-            transactionRepository.getAllTransactions().collectLatest { allTransactions ->
-                val expenses = allTransactions.filter { it.type == "EXPENSE" }
+            combine(transactionRepository.getAllTransactions(), filter) { all, f -> all to f }
+                .collectLatest { (allTransactions, currentFilter) ->
+                val start = startOf(currentFilter)
+                val expenses = allTransactions.filter { it.type == "EXPENSE" && it.dateTimestamp >= start }
                 
                 // Agrupar por fecha
                 val grouped = expenses.groupBy { getDayLabel(it.dateTimestamp) }
@@ -43,7 +70,8 @@ class GastosViewModel @Inject constructor(
                 _uiState.value = _uiState.value.copy(
                     totalExpenses = totalExpenses,
                     totalAntExpenses = totalAntExpenses,
-                    groupedExpenses = grouped
+                    groupedExpenses = grouped,
+                    filter = currentFilter
                 )
             }
         }
@@ -68,7 +96,10 @@ class GastosViewModel @Inject constructor(
     }
 }
 
+enum class GastosFilter { SEMANA, MES }
+
 data class GastosUiState(
+    val filter: GastosFilter = GastosFilter.SEMANA,
     val totalExpenses: Double = 0.0,
     val totalAntExpenses: Double = 0.0,
     val groupedExpenses: Map<String, List<TransactionEntity>> = emptyMap()

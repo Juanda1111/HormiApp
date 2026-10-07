@@ -1,5 +1,8 @@
-﻿package com.hormi.hormiapp.ui.ingresos
+package com.hormi.hormiapp.ui.ingresos
 
+import com.hormi.hormiapp.util.LocalCurrency
+import com.hormi.hormiapp.util.currencySymbol
+import com.hormi.hormiapp.util.rememberMoneyFormatter
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -42,14 +45,78 @@ fun IngresosScreen(
     viewModel: IngresosViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    val formatter = NumberFormat.getCurrencyInstance(Locale("es", "CO"))
-    formatter.maximumFractionDigits = 0
+    val money = rememberMoneyFormatter()
     val dateFormatter = SimpleDateFormat("dd MMM yyyy", Locale("es", "ES"))
 
     var showEditDialog by remember { mutableStateOf(false) }
     var editIncomeValue by remember { mutableStateOf("") }
 
-    val backgroundColor = Color(0xFFF9F6F0)
+    var showAddDialog by remember { mutableStateOf(false) }
+    var addAmount by remember { mutableStateOf("") }
+    var addDescription by remember { mutableStateOf("") }
+    var addDate by remember { mutableStateOf(System.currentTimeMillis()) }
+    var showDatePicker by remember { mutableStateOf(false) }
+
+    val backgroundColor = MaterialTheme.colorScheme.background
+
+    if (showDatePicker) {
+        val datePickerState = rememberDatePickerState(initialSelectedDateMillis = addDate)
+        DatePickerDialog(
+            onDismissRequest = { showDatePicker = false },
+            confirmButton = {
+                TextButton(onClick = {
+                    datePickerState.selectedDateMillis?.let { addDate = it }
+                    showDatePicker = false
+                }) { Text("Aceptar", color = PrimaryGreen) }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDatePicker = false }) { Text("Cancelar", color = Color.Gray) }
+            }
+        ) {
+            DatePicker(state = datePickerState)
+        }
+    }
+
+    if (showAddDialog) {
+        val amountValid = (addAmount.toLongOrNull() ?: 0L) > 0L
+        AlertDialog(
+            onDismissRequest = { showAddDialog = false },
+            title = { Text("Nuevo ingreso extra") },
+            text = {
+                Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                    OutlinedTextField(
+                        value = addAmount,
+                        onValueChange = { addAmount = it.filter { c -> c.isDigit() }.take(12) },
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                        label = { Text("Monto") },
+                        prefix = { Text("${currencySymbol(LocalCurrency.current)} ") },
+                        singleLine = true
+                    )
+                    OutlinedTextField(
+                        value = addDescription,
+                        onValueChange = { addDescription = it.take(60) },
+                        label = { Text("Descripción (opcional)") },
+                        singleLine = true
+                    )
+                    OutlinedButton(onClick = { showDatePicker = true }) {
+                        Text("Fecha: ${dateFormatter.format(Date(addDate))}", color = PrimaryGreen)
+                    }
+                }
+            },
+            confirmButton = {
+                TextButton(
+                    enabled = amountValid,
+                    onClick = {
+                        viewModel.addExtraIncome(addAmount, addDescription, addDate)
+                        showAddDialog = false
+                    }
+                ) { Text("Guardar", color = if (amountValid) PrimaryGreen else Color.Gray) }
+            },
+            dismissButton = {
+                TextButton(onClick = { showAddDialog = false }) { Text("Cancelar", color = Color.Gray) }
+            }
+        )
+    }
 
     if (showEditDialog) {
         AlertDialog(
@@ -61,7 +128,7 @@ fun IngresosScreen(
                     onValueChange = { editIncomeValue = it },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     label = { Text("Nuevo monto") },
-                    prefix = { Text("$ ") },
+                    prefix = { Text("${currencySymbol(LocalCurrency.current)} ") },
                     singleLine = true
                 )
             },
@@ -114,7 +181,7 @@ fun IngresosScreen(
                             )
                             Spacer(modifier = Modifier.height(8.dp))
                             Text(
-                                text = formatter.format(grandTotal),
+                                text = money(grandTotal),
                                 color = Color.White,
                                 fontSize = 36.sp,
                                 fontWeight = FontWeight.ExtraBold
@@ -130,7 +197,7 @@ fun IngresosScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .border(2.dp, Color(0xFF007AFF), RoundedCornerShape(16.dp)), // Borde azul brillante
-                        colors = CardDefaults.cardColors(containerColor = Color.White),
+                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
                         shape = RoundedCornerShape(16.dp)
                     ) {
                         Column(modifier = Modifier.padding(16.dp)) {
@@ -162,10 +229,10 @@ fun IngresosScreen(
                                         fontSize = 14.sp
                                     )
                                     Text(
-                                        text = formatter.format(uiState.baseIncome),
+                                        text = money(uiState.baseIncome),
                                         fontWeight = FontWeight.Bold,
                                         fontSize = 20.sp,
-                                        color = Color.Black
+                                        color = MaterialTheme.colorScheme.onSurface
                                     )
                                 }
                                 
@@ -200,7 +267,7 @@ fun IngresosScreen(
                         text = "Ingresos extra este mes",
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color.Black
+                        color = MaterialTheme.colorScheme.onSurface
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                 }
@@ -244,7 +311,7 @@ fun IngresosScreen(
                                     text = income.description.ifEmpty { income.category },
                                     fontWeight = FontWeight.Bold,
                                     fontSize = 16.sp,
-                                    color = Color.Black
+                                    color = MaterialTheme.colorScheme.onSurface
                                 )
                                 Text(
                                     text = dateFormatter.format(Date(income.dateTimestamp)),
@@ -254,7 +321,7 @@ fun IngresosScreen(
                             }
                             
                             Text(
-                                text = "+${formatter.format(income.amount)}",
+                                text = "+${money(income.amount)}",
                                 fontWeight = FontWeight.Bold,
                                 fontSize = 16.sp,
                                 color = PrimaryGreen
@@ -268,7 +335,13 @@ fun IngresosScreen(
 
         // FAB Extendido
         ExtendedFloatingActionButton(
-            onClick = onAddExtraIncomeClick,
+            onClick = {
+                addAmount = ""
+                addDescription = ""
+                addDate = System.currentTimeMillis()
+                showAddDialog = true
+                onAddExtraIncomeClick()
+            },
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .padding(24.dp),

@@ -1,4 +1,4 @@
-﻿package com.hormi.hormiapp.ui.detalle_gasto
+package com.hormi.hormiapp.ui.detalle_gasto
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -28,8 +28,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.hormi.hormiapp.ui.components.HormiAppHeader
+import com.hormi.hormiapp.ui.components.categoryIcon
 import com.hormi.hormiapp.ui.theme.AccentYellow
 import com.hormi.hormiapp.ui.theme.PrimaryGreen
+import com.hormi.hormiapp.util.rememberMoneyFormatter
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -43,11 +45,29 @@ fun DetalleGastoScreen(
     viewModel: DetalleGastoViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    val formatter = NumberFormat.getNumberInstance(Locale("es", "CO"))
+    val money = rememberMoneyFormatter()
     val dateFormatter = SimpleDateFormat("d MMM yyyy", Locale("es", "ES"))
 
-    val backgroundColor = Color(0xFFF9F6F0)
-    
+    val backgroundColor = MaterialTheme.colorScheme.background
+    var showDeleteDialog by remember { mutableStateOf(false) }
+
+    if (showDeleteDialog) {
+        AlertDialog(
+            onDismissRequest = { showDeleteDialog = false },
+            title = { Text("Eliminar gasto") },
+            text = { Text("¿Seguro que quieres eliminar este gasto? Esta acción no se puede deshacer.") },
+            confirmButton = {
+                TextButton(onClick = {
+                    showDeleteDialog = false
+                    viewModel.deleteTransaction()
+                }) { Text("Eliminar", color = Color(0xFFD32F2F)) }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDeleteDialog = false }) { Text("Cancelar", color = Color.Gray) }
+            }
+        )
+    }
+
     LaunchedEffect(uiState.isDeleted) {
         if (uiState.isDeleted) {
             onBackClick()
@@ -85,13 +105,8 @@ fun DetalleGastoScreen(
                     Spacer(modifier = Modifier.height(32.dp))
                     
                     // Ícono Central
-                    val icon = when {
-                        trans.category.contains("Café") -> Icons.Default.LocalCafe
-                        trans.category.contains("Transporte") -> Icons.Default.DirectionsBus
-                        trans.category.contains("Comida") -> Icons.Default.Fastfood
-                        else -> Icons.Default.Category
-                    }
-                    
+                    val icon = categoryIcon(trans.category)
+
                     Box(
                         modifier = Modifier
                             .size(80.dp)
@@ -107,10 +122,10 @@ fun DetalleGastoScreen(
                     
                     // Monto
                     Text(
-                        text = "$ ${formatter.format(trans.amount)}",
+                        text = money(trans.amount),
                         fontSize = 40.sp,
                         fontWeight = FontWeight.ExtraBold,
-                        color = Color.Black,
+                        color = MaterialTheme.colorScheme.onSurface,
                         modifier = Modifier.align(Alignment.CenterHorizontally)
                     )
                     
@@ -147,7 +162,7 @@ fun DetalleGastoScreen(
                     // Tarjeta de Detalles
                     Card(
                         modifier = Modifier.fillMaxWidth(),
-                        colors = CardDefaults.cardColors(containerColor = Color.White),
+                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
                         shape = RoundedCornerShape(16.dp),
                         border = BorderStroke(1.dp, Color.LightGray.copy(alpha = 0.5f))
                     ) {
@@ -198,7 +213,7 @@ fun DetalleGastoScreen(
                     ) {
                         // Eliminar
                         OutlinedButton(
-                            onClick = { viewModel.deleteTransaction() },
+                            onClick = { showDeleteDialog = true },
                             modifier = Modifier
                                 .weight(1f)
                                 .height(56.dp),
@@ -246,7 +261,7 @@ fun DetailRow(icon: androidx.compose.ui.graphics.vector.ImageVector, label: Stri
         Spacer(modifier = Modifier.width(16.dp))
         Column {
             Text(text = label, color = Color.Gray, fontSize = 12.sp)
-            Text(text = value, color = Color.Black, fontSize = 16.sp, fontWeight = FontWeight.Normal)
+            Text(text = value, color = MaterialTheme.colorScheme.onSurface, fontSize = 16.sp, fontWeight = FontWeight.Normal)
         }
     }
 }

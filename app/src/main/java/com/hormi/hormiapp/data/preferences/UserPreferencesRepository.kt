@@ -26,6 +26,10 @@ class UserPreferencesRepository @Inject constructor(
         val SECURITY_ANSWER = stringPreferencesKey("security_answer")
         val HAS_COMPLETED_ONBOARDING = booleanPreferencesKey("has_completed_onboarding")
         val MONTHLY_INCOME = stringPreferencesKey("monthly_income")
+        val CURRENCY = stringPreferencesKey("currency")
+        val REMINDER_ENABLED = booleanPreferencesKey("reminder_enabled")
+        val REMINDER_TIME = stringPreferencesKey("reminder_time")
+        val THEME = stringPreferencesKey("theme")
         val ANT_EXPENSE_THRESHOLD = androidx.datastore.preferences.core.doublePreferencesKey("ant_expense_threshold")
     }
 
@@ -44,6 +48,14 @@ class UserPreferencesRepository @Inject constructor(
     val antExpenseThreshold: Flow<Double> = context.dataStore.data.map { preferences ->
         preferences[PreferencesKeys.ANT_EXPENSE_THRESHOLD] ?: 15000.0
     }
+
+    val currency: Flow<String> = context.dataStore.data.map { it[PreferencesKeys.CURRENCY] ?: "COP $" }
+
+    val reminderEnabled: Flow<Boolean> = context.dataStore.data.map { it[PreferencesKeys.REMINDER_ENABLED] ?: false }
+
+    val reminderTime: Flow<String> = context.dataStore.data.map { it[PreferencesKeys.REMINDER_TIME] ?: "20:00" }
+
+    val theme: Flow<String> = context.dataStore.data.map { it[PreferencesKeys.THEME] ?: "Sistema" }
 
     suspend fun saveUserData(name: String, pin: String, answer: String) {
         context.dataStore.edit { preferences ->
@@ -70,5 +82,28 @@ class UserPreferencesRepository @Inject constructor(
         context.dataStore.edit { preferences ->
             preferences[PreferencesKeys.ANT_EXPENSE_THRESHOLD] = threshold
         }
+    }
+
+    suspend fun saveMonthlyIncome(income: String) {
+        context.dataStore.edit { it[PreferencesKeys.MONTHLY_INCOME] = income }
+    }
+
+    suspend fun updateCurrency(currency: String) {
+        context.dataStore.edit { it[PreferencesKeys.CURRENCY] = currency }
+    }
+
+    suspend fun updateReminder(enabled: Boolean, time: String) {
+        context.dataStore.edit {
+            it[PreferencesKeys.REMINDER_ENABLED] = enabled
+            it[PreferencesKeys.REMINDER_TIME] = time
+        }
+    }
+
+    suspend fun updateTheme(theme: String) {
+        context.dataStore.edit { it[PreferencesKeys.THEME] = theme }
+    }
+
+    suspend fun clearAll() {
+        context.dataStore.edit { it.clear() }
     }
 }

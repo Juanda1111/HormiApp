@@ -45,4 +45,22 @@ class MetasAhorroViewModel @Inject constructor(
             goalRepository.deleteGoal(goal)
         }
     }
+
+    fun createGoal(name: String, targetText: String, iconName: String) {
+        val target = targetText.filter { it.isDigit() }.toDoubleOrNull() ?: return
+        if (name.isBlank() || target <= 0) return
+        viewModelScope.launch {
+            goalRepository.insertGoal(
+                GoalEntity(name = name.trim(), targetAmount = target, currentAmount = 0.0, iconName = iconName)
+            )
+        }
+    }
+
+    fun addToGoal(goal: GoalEntity, amount: Double) {
+        if (amount <= 0) return
+        viewModelScope.launch {
+            val newAmount = (goal.currentAmount + amount).coerceAtMost(goal.targetAmount)
+            goalRepository.updateGoal(goal.copy(currentAmount = newAmount))
+        }
+    }
 }

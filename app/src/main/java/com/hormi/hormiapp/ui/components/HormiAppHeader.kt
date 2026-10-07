@@ -1,5 +1,6 @@
 package com.hormi.hormiapp.ui.components
 
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -39,7 +40,7 @@ fun HormiAppHeader(
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                     contentDescription = "Atrás",
-                    tint = Color.Black,
+                    tint = MaterialTheme.colorScheme.onSurface,
                     modifier = Modifier
                         .clip(CircleShape)
                         .clickable { onBackClick() }
@@ -70,7 +71,7 @@ fun HormiAppHeader(
                     text = title,
                     fontSize = 20.sp,
                     fontWeight = FontWeight.ExtraBold,
-                    color = Color.Black
+                    color = MaterialTheme.colorScheme.onSurface
                 )
             }
         }
