@@ -150,6 +150,9 @@ fun HormiAppNavigation(
                     },
                     onNavigateToConfiguracion = {
                         navController.navigate(Screen.Configuracion.route)
+                    },
+                    onNavigateToCreditos = {
+                        navController.navigate(Screen.Creditos.route)
                     }
                 )
             }
@@ -204,6 +207,13 @@ fun HormiAppNavigation(
             }
             composable(route = Screen.Configuracion.route) {
                 com.hormi.hormiapp.ui.configuracion.ConfiguracionScreen(
+                    onBackClick = {
+                        navController.popBackStack()
+                    }
+                )
+            }
+            composable(route = Screen.Creditos.route) {
+                com.hormi.hormiapp.ui.creditos.CreditosScreen(
                     onBackClick = {
                         navController.popBackStack()
                     }
