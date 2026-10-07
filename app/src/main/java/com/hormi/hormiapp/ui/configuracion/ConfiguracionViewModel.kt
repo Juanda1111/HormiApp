@@ -1,10 +1,12 @@
 package com.hormi.hormiapp.ui.configuracion
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 data class ConfiguracionUiState(
@@ -17,10 +19,20 @@ data class ConfiguracionUiState(
 )
 
 @HiltViewModel
-class ConfiguracionViewModel @Inject constructor() : ViewModel() {
+class ConfiguracionViewModel @Inject constructor(
+    private val userPreferencesRepository: com.hormi.hormiapp.data.preferences.UserPreferencesRepository
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ConfiguracionUiState())
     val uiState: StateFlow<ConfiguracionUiState> = _uiState.asStateFlow()
+
+    init {
+        viewModelScope.launch {
+            userPreferencesRepository.antExpenseThreshold.collect { threshold ->
+                _uiState.value = _uiState.value.copy(antExpenseThreshold = threshold)
+            }
+        }
+    }
 
     fun updateCurrency(currency: String) {
         _uiState.value = _uiState.value.copy(selectedCurrency = currency)

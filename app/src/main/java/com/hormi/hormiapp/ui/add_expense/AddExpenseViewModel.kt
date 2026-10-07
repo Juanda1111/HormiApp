@@ -29,23 +29,28 @@ data class AddExpenseUiState(
 
 @HiltViewModel
 class AddExpenseViewModel @Inject constructor(
-    private val transactionRepository: TransactionRepository
+    private val transactionRepository: TransactionRepository,
+    private val userPreferencesRepository: com.hormi.hormiapp.data.preferences.UserPreferencesRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(AddExpenseUiState())
     val uiState: StateFlow<AddExpenseUiState> = _uiState.asStateFlow()
 
+    private var currentThreshold: Double = 15000.0
+
+    init {
+        viewModelScope.launch {
+            userPreferencesRepository.antExpenseThreshold.collect { threshold ->
+                currentThreshold = threshold
+            }
+        }
+    }
+
     fun updateAmount(newAmount: String) {
         // Filtrar solo números
         val filtered = newAmount.filter { it.isDigit() }
-        val amountValue = filtered.toDoubleOrNull() ?: 0.0
-        
-        // Auto-clasificar como gasto hormiga si es pequeño (ej. <= 15000)
-        val isAutoHormiga = amountValue > 0 && amountValue <= 15000
-        
         _uiState.value = _uiState.value.copy(
-            amount = filtered,
-            isImpulsive = if (isAutoHormiga) true else _uiState.value.isImpulsive
+            amount = filtered
         )
     }
 
@@ -81,13 +86,16 @@ class AddExpenseViewModel @Inject constructor(
         if (amountValue <= 0) return
 
         viewModelScope.launch {
+            // Regla: si es menor o igual al umbral del usuario, es hormiga. Si no, depende del switch.
+            val isActuallyAntExpense = if (amountValue <= currentThreshold) true else state.isImpulsive
+
             val transaction = TransactionEntity(
                 amount = amountValue,
                 type = "EXPENSE",
                 category = state.category,
                 description = state.note,
                 dateTimestamp = state.dateTimestamp,
-                isAntExpense = state.isImpulsive
+                isAntExpense = isActuallyAntExpense
             )
             
             transactionRepository.insertTransaction(transaction)

@@ -26,6 +26,7 @@ class UserPreferencesRepository @Inject constructor(
         val SECURITY_ANSWER = stringPreferencesKey("security_answer")
         val HAS_COMPLETED_ONBOARDING = booleanPreferencesKey("has_completed_onboarding")
         val MONTHLY_INCOME = stringPreferencesKey("monthly_income")
+        val ANT_EXPENSE_THRESHOLD = androidx.datastore.preferences.core.doublePreferencesKey("ant_expense_threshold")
     }
 
     val userName: Flow<String?> = context.dataStore.data.map { it[PreferencesKeys.USER_NAME] }
@@ -39,6 +40,10 @@ class UserPreferencesRepository @Inject constructor(
     }
 
     val monthlyIncome: Flow<String?> = context.dataStore.data.map { it[PreferencesKeys.MONTHLY_INCOME] }
+
+    val antExpenseThreshold: Flow<Double> = context.dataStore.data.map { preferences ->
+        preferences[PreferencesKeys.ANT_EXPENSE_THRESHOLD] ?: 15000.0
+    }
 
     suspend fun saveUserData(name: String, pin: String, answer: String) {
         context.dataStore.edit { preferences ->
@@ -58,6 +63,12 @@ class UserPreferencesRepository @Inject constructor(
         context.dataStore.edit { preferences ->
             preferences[PreferencesKeys.HAS_COMPLETED_ONBOARDING] = true
             preferences[PreferencesKeys.MONTHLY_INCOME] = income
+        }
+    }
+
+    suspend fun updateAntExpenseThreshold(threshold: Double) {
+        context.dataStore.edit { preferences ->
+            preferences[PreferencesKeys.ANT_EXPENSE_THRESHOLD] = threshold
         }
     }
 }
