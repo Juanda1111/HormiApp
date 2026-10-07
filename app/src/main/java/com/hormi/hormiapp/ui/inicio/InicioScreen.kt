@@ -1,5 +1,6 @@
 package com.hormi.hormiapp.ui.inicio
 
+import com.hormi.hormiapp.ui.components.categoryIcon
 import com.hormi.hormiapp.ui.theme.AntBackground
 import com.hormi.hormiapp.util.rememberMoneyFormatter
 import androidx.compose.foundation.BorderStroke
@@ -338,7 +339,7 @@ fun InicioScreen(
                             contentAlignment = Alignment.Center
                         ) {
                             Icon(
-                                imageVector = if (transaction.category.contains("Café", ignoreCase = true) || transaction.category.contains("Hormiga")) Icons.Default.LocalCafe else Icons.Default.DirectionsBus,
+                                imageVector = categoryIcon(transaction.category),
                                 contentDescription = null,
                                 tint = PrimaryGreen,
                                 modifier = Modifier.size(24.dp)

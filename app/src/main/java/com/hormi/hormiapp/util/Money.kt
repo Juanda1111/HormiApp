@@ -15,7 +15,7 @@ private val numberFormat: NumberFormat = NumberFormat.getNumberInstance(Locale("
 fun currencySymbol(currency: String): String = currency.substringAfter(' ', "$")
 
 fun formatMoney(amount: Double, currency: String): String =
-    "${currencySymbol(currency)} ${numberFormat.format(amount)}"
+    "${currencySymbol(currency)}\u00A0${numberFormat.format(amount)}"
 
 /** Devuelve una función que formatea montos con la moneda elegida por el usuario. */
 @Composable
