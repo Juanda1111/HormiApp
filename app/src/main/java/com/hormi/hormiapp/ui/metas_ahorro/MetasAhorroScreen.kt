@@ -1,5 +1,6 @@
 package com.hormi.hormiapp.ui.metas_ahorro
 
+import com.hormi.hormiapp.ui.theme.AntBackground
 import androidx.compose.runtime.*
 import com.hormi.hormiapp.util.LocalCurrency
 import com.hormi.hormiapp.util.currencySymbol
@@ -194,7 +195,7 @@ fun GoalItem(
                     modifier = Modifier
                         .size(48.dp)
                         .clip(CircleShape)
-                        .background(AccentYellow.copy(alpha = 0.4f)),
+                        .background(AntBackground),
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(imageVector = iconVector, contentDescription = null, tint = Color(0xFF6B4E0D))
@@ -325,7 +326,7 @@ private fun NewGoalDialog(
                             modifier = Modifier
                                 .size(44.dp)
                                 .clip(CircleShape)
-                                .background(if (selected) PrimaryGreen else AccentYellow.copy(alpha = 0.4f))
+                                .background(if (selected) PrimaryGreen else AntBackground)
                                 .clickable { icon = key },
                             contentAlignment = Alignment.Center
                         ) {

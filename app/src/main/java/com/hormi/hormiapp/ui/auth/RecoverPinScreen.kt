@@ -37,7 +37,7 @@ fun RecoverPinScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.White)
+            .background(MaterialTheme.colorScheme.background)
             .padding(horizontal = 16.dp)
             .verticalScroll(rememberScrollState())
     ) {
@@ -54,7 +54,7 @@ fun RecoverPinScreen(
             text = "Vamos a recuperarlo",
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold,
-            color = Color.Black,
+            color = MaterialTheme.colorScheme.onSurface,
             modifier = Modifier.fillMaxWidth(),
             textAlign = TextAlign.Center
         )
@@ -81,7 +81,7 @@ fun RecoverPinScreen(
         }
 
         // Pregunta de seguridad
-        Text(text = "Pregunta de seguridad: ¿Cuál es tu mayor sueño?", fontSize = 12.sp, color = Color.DarkGray)
+        Text(text = "Pregunta de seguridad: ¿Cuál es tu mayor sueño?", fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurface)
         Spacer(modifier = Modifier.height(4.dp))
         OutlinedTextField(
             value = uiState.securityAnswer,
@@ -91,8 +91,8 @@ fun RecoverPinScreen(
             singleLine = true,
             shape = RoundedCornerShape(12.dp),
             colors = TextFieldDefaults.colors(
-                focusedTextColor = Color.Black,
-                unfocusedTextColor = Color.Black,
+                focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
                 focusedIndicatorColor = PrimaryGreen,
                 unfocusedIndicatorColor = Color.LightGray,
                 unfocusedContainerColor = Color.Transparent,
@@ -103,7 +103,7 @@ fun RecoverPinScreen(
         Spacer(modifier = Modifier.height(16.dp))
 
         // Nuevo PIN
-        Text(text = "Nuevo PIN (4 dígitos)", fontSize = 12.sp, color = Color.DarkGray)
+        Text(text = "Nuevo PIN (4 dígitos)", fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurface)
         Spacer(modifier = Modifier.height(4.dp))
         OutlinedTextField(
             value = uiState.newPin,
@@ -124,8 +124,8 @@ fun RecoverPinScreen(
                 }
             },
             colors = TextFieldDefaults.colors(
-                focusedTextColor = Color.Black,
-                unfocusedTextColor = Color.Black,
+                focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
                 focusedIndicatorColor = PrimaryGreen,
                 unfocusedIndicatorColor = Color.LightGray,
                 unfocusedContainerColor = Color.Transparent,
@@ -136,7 +136,7 @@ fun RecoverPinScreen(
         Spacer(modifier = Modifier.height(16.dp))
 
         // Confirmar nuevo PIN
-        Text(text = "Confirmar nuevo PIN", fontSize = 12.sp, color = Color.DarkGray)
+        Text(text = "Confirmar nuevo PIN", fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurface)
         Spacer(modifier = Modifier.height(4.dp))
         OutlinedTextField(
             value = uiState.confirmNewPin,
@@ -157,8 +157,8 @@ fun RecoverPinScreen(
                 }
             },
             colors = TextFieldDefaults.colors(
-                focusedTextColor = Color.Black,
-                unfocusedTextColor = Color.Black,
+                focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
                 focusedIndicatorColor = PrimaryGreen,
                 unfocusedIndicatorColor = Color.LightGray,
                 unfocusedContainerColor = Color.Transparent,

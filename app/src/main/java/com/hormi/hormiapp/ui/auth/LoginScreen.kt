@@ -39,7 +39,7 @@ fun LoginScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.White)
+            .background(MaterialTheme.colorScheme.background)
             .padding(horizontal = 16.dp)
             .verticalScroll(rememberScrollState())
     ) {
@@ -55,7 +55,7 @@ fun LoginScreen(
             text = "¡Hola de nuevo!",
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold,
-            color = Color.Black,
+            color = MaterialTheme.colorScheme.onSurface,
             modifier = Modifier.fillMaxWidth(),
             textAlign = TextAlign.Center
         )
@@ -82,7 +82,7 @@ fun LoginScreen(
         }
 
         // Nombre (Solo lectura, cargado desde DataStore)
-        Text(text = "Nombre", fontSize = 12.sp, color = Color.DarkGray)
+        Text(text = "Nombre", fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurface)
         Spacer(modifier = Modifier.height(4.dp))
         OutlinedTextField(
             value = uiState.nombre,
@@ -93,8 +93,8 @@ fun LoginScreen(
             singleLine = true,
             shape = RoundedCornerShape(12.dp),
             colors = TextFieldDefaults.colors(
-                focusedTextColor = Color.Black,
-                unfocusedTextColor = Color.Black,
+                focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
                 focusedIndicatorColor = PrimaryGreen,
                 unfocusedIndicatorColor = Color.LightGray,
                 unfocusedContainerColor = Color.Transparent,
@@ -105,7 +105,7 @@ fun LoginScreen(
         Spacer(modifier = Modifier.height(16.dp))
 
         // PIN
-        Text(text = "PIN (4 dígitos)", fontSize = 12.sp, color = Color.DarkGray)
+        Text(text = "PIN (4 dígitos)", fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurface)
         Spacer(modifier = Modifier.height(4.dp))
         OutlinedTextField(
             value = uiState.pin,
@@ -126,8 +126,8 @@ fun LoginScreen(
                 }
             },
             colors = TextFieldDefaults.colors(
-                focusedTextColor = Color.Black,
-                unfocusedTextColor = Color.Black,
+                focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
                 focusedIndicatorColor = PrimaryGreen,
                 unfocusedIndicatorColor = Color.LightGray,
                 unfocusedContainerColor = Color.Transparent,

@@ -1,5 +1,6 @@
 package com.hormi.hormiapp.ui.onboarding
 
+import com.hormi.hormiapp.ui.theme.AntBackground
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -40,7 +41,7 @@ fun OnboardingScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFFAFAFA)) // Color de fondo del figma, casi blanco
+            .background(MaterialTheme.colorScheme.background) // Color de fondo del figma, casi blanco
             .padding(horizontal = 16.dp)
             .verticalScroll(rememberScrollState())
     ) {
@@ -56,7 +57,7 @@ fun OnboardingScreen(
             text = "¿Qué es un gasto hormiga?",
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold,
-            color = Color.Black
+            color = MaterialTheme.colorScheme.onSurface
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -66,7 +67,7 @@ fun OnboardingScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(16.dp))
-                .background(AccentYellow.copy(alpha = 0.3f))
+                .background(AntBackground)
                 .padding(20.dp)
         ) {
             Column {
@@ -127,7 +128,7 @@ fun OnboardingScreen(
             text = "¿Cuánto recibes al mes?",
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold,
-            color = Color.Black
+            color = MaterialTheme.colorScheme.onSurface
         )
         
         Spacer(modifier = Modifier.height(4.dp))
@@ -163,23 +164,23 @@ fun OnboardingScreen(
             textStyle = LocalTextStyle.current.copy(
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color.Black
+                color = MaterialTheme.colorScheme.onSurface
             ),
             shape = RoundedCornerShape(12.dp),
             colors = TextFieldDefaults.colors(
-                focusedTextColor = Color.Black,
-                unfocusedTextColor = Color.Black,
+                focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
                 focusedIndicatorColor = PrimaryGreen,
                 unfocusedIndicatorColor = Color.LightGray,
-                unfocusedContainerColor = Color.White,
-                focusedContainerColor = Color.White
+                unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+                focusedContainerColor = MaterialTheme.colorScheme.surface
             ),
             prefix = {
                 Text(
                     text = "$ ",
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color.Black
+                    color = MaterialTheme.colorScheme.onSurface
                 )
             }
         )

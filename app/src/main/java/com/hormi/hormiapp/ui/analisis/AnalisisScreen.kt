@@ -1,5 +1,6 @@
 package com.hormi.hormiapp.ui.analisis
 
+import com.hormi.hormiapp.ui.theme.AntBackground
 import com.hormi.hormiapp.util.rememberMoneyFormatter
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -79,12 +80,12 @@ fun AnalisisScreen(
                 item {
                     Card(
                         modifier = Modifier.fillMaxWidth(),
-                        colors = CardDefaults.cardColors(containerColor = AccentYellow.copy(alpha = 0.4f)),
+                        colors = CardDefaults.cardColors(containerColor = AntBackground),
                         shape = RoundedCornerShape(16.dp)
                     ) {
                         Column(modifier = Modifier.padding(20.dp)) {
                             Text(
-                                text = "Semana del 28 sep al 4 oct", // Hardcodeado temporalmente por diseño
+                                text = currentWeekLabel(),
                                 color = Color(0xFF7A6A53),
                                 fontSize = 14.sp
                             )
@@ -356,4 +357,14 @@ fun AnalisisScreen(
             Icon(imageVector = Icons.Default.Add, contentDescription = "Agregar gasto", modifier = Modifier.size(28.dp))
         }
     }
+}
+
+/** "Semana del 5 oct al 11 oct": lunes a domingo de la semana actual. */
+private fun currentWeekLabel(): String {
+    val format = java.text.SimpleDateFormat("d MMM", Locale("es", "ES"))
+    val cal = java.util.Calendar.getInstance()
+    cal.add(java.util.Calendar.DAY_OF_YEAR, -((cal.get(java.util.Calendar.DAY_OF_WEEK) + 5) % 7))
+    val start = format.format(cal.time)
+    cal.add(java.util.Calendar.DAY_OF_YEAR, 6)
+    return "Semana del $start al ${format.format(cal.time)}"
 }
