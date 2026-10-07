@@ -1,5 +1,8 @@
 package com.hormi.hormiapp.ui.analisis
 
+import kotlin.math.roundToInt
+import androidx.compose.material.icons.filled.Remove
+import androidx.compose.material.icons.filled.ArrowDownward
 import com.hormi.hormiapp.ui.theme.AntBackground
 import com.hormi.hormiapp.util.rememberMoneyFormatter
 import androidx.compose.foundation.BorderStroke
@@ -99,17 +102,23 @@ fun AnalisisScreen(
                             Spacer(modifier = Modifier.height(8.dp))
                             
                             if (uiState.previousWeekExpenses > 0) {
+                                val percent = kotlin.math.abs(uiState.percentageChange * 100).roundToInt()
+                                val (arrow, color, message) = when {
+                                    percent == 0 -> Triple(Icons.Default.Remove, Color(0xFF7A6A53), "Igual que la semana anterior")
+                                    uiState.isIncrease -> Triple(Icons.Default.ArrowUpward, Color(0xFFD32F2F), "$percent% más que la semana anterior")
+                                    else -> Triple(Icons.Default.ArrowDownward, Color(0xFF2E7D32), "$percent% menos que la semana anterior")
+                                }
                                 Row(verticalAlignment = Alignment.CenterVertically) {
                                     Icon(
-                                        imageVector = Icons.Default.ArrowUpward,
+                                        imageVector = arrow,
                                         contentDescription = null,
-                                        tint = Color(0xFFD32F2F),
+                                        tint = color,
                                         modifier = Modifier.size(16.dp)
                                     )
                                     Spacer(modifier = Modifier.width(4.dp))
                                     Text(
-                                        text = "${(uiState.percentageChange * 100).toInt()}% más que la semana anterior (${money(uiState.previousWeekExpenses)})",
-                                        color = Color(0xFFD32F2F),
+                                        text = "$message (${money(uiState.previousWeekExpenses)})",
+                                        color = color,
                                         fontSize = 12.sp,
                                         fontWeight = FontWeight.Bold
                                     )
@@ -138,6 +147,13 @@ fun AnalisisScreen(
                             )
                             Spacer(modifier = Modifier.height(16.dp))
 
+                            if (uiState.categoryStats.isEmpty()) {
+                                Text(
+                                    text = "Aún no hay gastos esta semana.",
+                                    color = Color.Gray,
+                                    fontSize = 14.sp
+                                )
+                            }
                             uiState.categoryStats.forEach { stat ->
                                 Row(
                                     modifier = Modifier.fillMaxWidth(),
@@ -198,6 +214,13 @@ fun AnalisisScreen(
                             )
                             Spacer(modifier = Modifier.height(16.dp))
 
+                            if (uiState.categoryStats.isEmpty()) {
+                                Text(
+                                    text = "Aún no hay gastos esta semana.",
+                                    color = Color.Gray,
+                                    fontSize = 14.sp
+                                )
+                            }
                             uiState.categoryStats.take(3).forEachIndexed { index, stat ->
                                 val rankBgColor = when (index) {
                                     0 -> Color(0xFFE69A4C) // Naranja

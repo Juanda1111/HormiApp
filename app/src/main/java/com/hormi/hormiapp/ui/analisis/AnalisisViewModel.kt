@@ -46,46 +46,7 @@ class AnalisisViewModel @Inject constructor(
     private fun loadAnalysisData() {
         viewModelScope.launch {
             transactionRepository.getAllTransactions().collectLatest { transactions ->
-                // Filtrar solo gastos hormiga para las proyecciones
-                val antExpenses = transactions.filter { it.isAntExpense && it.type == "EXPENSE" }
-                val totalAnt = antExpenses.sumOf { it.amount }
-                
-                // Agrupar por categoría todos los gastos (no solo hormiga)
-                val allExpenses = transactions.filter { it.type == "EXPENSE" }
-                val totalExpenses = allExpenses.sumOf { it.amount }
-
-                val grouped = allExpenses.groupBy { it.category }
-                val stats = grouped.map { (category, list) ->
-                    val sum = list.sumOf { it.amount }
-                    CategoryStat(
-                        name = category,
-                        totalAmount = sum,
-                        count = list.size,
-                        percentage = if (totalExpenses > 0) (sum / totalExpenses).toFloat() else 0f
-                    )
-                }.sortedByDescending { it.totalAmount }
-                
-                // Mocks de simulación para los datos que dependen de históricos largos
-                // Si el total es el del demo (31800), hardcodeamos para que coincida con el Figma para el pantallazo,
-                // de lo contrario calculamos de forma proporcional.
-                val projectedMonth = if (totalAnt == 31800.0) 318000.0 else (totalAnt / 7) * 30
-                val projectedYear = if (totalAnt == 31800.0) 3869000.0 else projectedMonth * 12
-                val potentialSav = projectedYear / 2 // Ahorrarías la mitad
-                
-                val previousWeek = if (totalAnt == 31800.0) 26500.0 else totalAnt * 0.8
-                val percentChange = if (previousWeek > 0) ((totalAnt - previousWeek) / previousWeek).toFloat() else 0f
-                val isIncrease = totalAnt >= previousWeek
-
-                _uiState.value = _uiState.value.copy(
-                    totalAntExpenses = totalAnt,
-                    previousWeekExpenses = previousWeek,
-                    percentageChange = percentChange,
-                    isIncrease = isIncrease,
-                    categoryStats = stats,
-                    projectedMonthly = projectedMonth,
-                    projectedYearly = projectedYear,
-                    potentialSavings = potentialSav
-                )
+                _uiState.value = AnalysisCalculator.calculate(transactions)
             }
         }
     }
