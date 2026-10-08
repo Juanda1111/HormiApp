@@ -1,10 +1,54 @@
-# HormiApp
+<p align="center">
+  <img src="docs/capturas/icono.png" alt="Logo de HormiApp" width="120">
+</p>
 
-Aplicación nativa Android para el control de **finanzas personales**, enfocada en detectar y reducir los **gastos hormiga** (compras pequeñas y frecuentes que pasan desapercibidas). Funciona sin internet: todos los datos se guardan en el dispositivo.
+<h1 align="center">HormiApp</h1>
 
-Proyecto de la **Entrega 3 – APP Nativa** del curso de Aplicaciones Móviles (Android Studio + Kotlin + Jetpack Compose).
+<p align="center"><b>Cuida cada peso, hasta el más pequeño.</b></p>
 
-## Equipo
+HormiApp es una aplicación Android para controlar tus **finanzas personales** y descubrir tus **gastos hormiga**: esas compras pequeñas y frecuentes (un tinto, un snack, un pasaje, un domicilio) que casi no notas, pero que al final del mes suman mucho.
+
+Funciona **sin internet** y **tus datos se quedan en tu celular**.
+
+<p align="center">
+  <img src="docs/capturas/1-inicio.png" alt="Inicio" width="22%">
+  <img src="docs/capturas/2-gastos.png" alt="Gastos" width="22%">
+  <img src="docs/capturas/3-analisis.png" alt="Análisis" width="22%">
+  <img src="docs/capturas/4-metas.png" alt="Metas de ahorro" width="22%">
+</p>
+
+## Qué puedes hacer
+
+- **Registrar tus gastos** en segundos: monto, categoría, nota y fecha, con gastos rápidos para lo de todos los días. Puedes editarlos o eliminarlos.
+- **Detectar tus gastos hormiga** automáticamente, según el límite que tú definas.
+- **Ver tu presupuesto semanal**: cuánto llevas gastado y cuánto te queda.
+- **Analizar tu semana**: cuánto gastaste en hormigas, cómo cambió frente a la semana anterior y en qué categorías se va tu dinero.
+- **Descubrir el efecto a largo plazo**: cuánto gastarías al mes y al año si sigues a este ritmo, y cuánto podrías ahorrar.
+- **Anotar tus ingresos**: tu ingreso mensual y los ingresos extra que te lleguen.
+- **Crear metas de ahorro** y abonar a ellas hasta cumplirlas.
+- **Personalizar la app**: moneda, tema claro u oscuro y un recordatorio diario para no olvidar registrar tus gastos.
+
+## Tu cuenta y tu privacidad
+
+- **Varias cuentas en el mismo celular.** Cada persona entra con su nombre y un PIN de 4 dígitos, y tiene sus propios gastos, metas y ajustes, separados de los demás.
+- **Recuperar el PIN** es posible con la respuesta a tu pregunta de seguridad.
+- **Todo se guarda solo en tu dispositivo.** La app no tiene acceso a internet, no tiene anuncios ni analítica, y no envía información a ningún servidor.
+- **Puedes borrar tus datos** cuando quieras desde Perfil → Configuración.
+- Lee la [política de privacidad completa](PRIVACY.md).
+
+## Pruébala sin usar tus datos
+
+En la pantalla de **Crear cuenta** toca **«Probar con usuario demo»**. Se crea una cuenta de ejemplo (nombre `Demo`, PIN `1234`) con gastos, ingresos y metas ya cargados, para que explores todas las pantallas. Puedes salir de ella y crear tu cuenta real cuando quieras: las demás cuentas del celular no se tocan.
+
+## Requisitos
+
+Android 8.0 (API 26) o superior.
+
+## Diseño
+
+El diseño de las pantallas está en la carpeta [`docs/`](docs/HormiApp%20-%20Dise%C3%B1o%20figma): alta fidelidad, variantes de cada pantalla y el wireframe manual digitalizado.
+
+## El equipo
 
 | Integrante | Rol |
 |---|---|
@@ -12,107 +56,14 @@ Proyecto de la **Entrega 3 – APP Nativa** del curso de Aplicaciones Móviles (
 | Sebastián Muñoz | Desarrollo Android |
 | Juan David Londoño | Desarrollo Android |
 
-## Funcionalidades
+Proyecto del curso de Aplicaciones Móviles. Hecho en Medellín, Colombia.
 
-- **Varias cuentas por celular:** cada usuario se registra con nombre, PIN y pregunta de seguridad, y entra escribiendo su nombre y PIN. Los gastos, ingresos, metas y ajustes de cada cuenta están separados. El nombre no distingue mayúsculas. Se puede recuperar el PIN con la respuesta de seguridad.
-- **Onboarding** con ingreso mensual.
-- **Inicio:** saldo, resumen de ingresos y gastos recientes.
-- **Gastos:** listado agrupado por categoría y detalle de cada gasto (con eliminación).
-- **Registrar gasto:** formulario con categoría, fecha y clasificación automática como gasto hormiga según un umbral configurable.
-- **Ingresos:** registro y consulta de ingresos.
-- **Análisis:** total de gastos hormiga, comparación semanal, categorías principales y proyección.
-- **Metas de ahorro:** crear y seguir metas.
-- **Perfil, Configuración** (umbral de gasto hormiga) y **Créditos**.
-- **Usuario demo:** el botón «Probar con usuario demo» de Crear cuenta crea (o reinicia) la cuenta «Demo» (PIN 1234) con gastos, ingresos y metas de ejemplo, sin afectar a las demás cuentas. Una cuenta nueva siempre empieza vacía. El nombre «Demo» está reservado.
+## Para desarrolladores
 
-## Pantallas y navegación
+Hecha con **Kotlin y Jetpack Compose** (Material 3), arquitectura MVVM por capas (`ui` → `domain` → `data`), **Room** y **DataStore** para guardar los datos, **Hilt** para la inyección de dependencias y **Navigation Compose**. Configuración: `minSdk 26`, `targetSdk 37`.
 
-Flujo de entrada: `Splash → Login / Registro → Onboarding → Inicio`.
-Barra inferior: **Inicio · Gastos · Análisis · Perfil**.
-Desde estas: Registrar gasto, Detalle de gasto, Ingresos, Metas, Configuración y Créditos.
-Las rutas están definidas en `navigation/Screen.kt` y `navigation/HormiAppNavigation.kt`.
-
-## Arquitectura
-
-MVVM por capas, con inyección de dependencias:
-
-```
-ui (Compose Screen + ViewModel)
-        │
-domain/usecase
-        │
-data/repository ──► data/local (Room: DAO + entidades)
-                └─► data/preferences (DataStore)
-```
-
-```
-app/src/main/java/com/hormi/hormiapp/
-├── data/
-│   ├── local/          # Room: HormiAppDatabase, dao/, entity/
-│   ├── preferences/    # DataStore (usuario, PIN, umbral)
-│   └── repository/     # TransactionRepository, GoalRepository
-├── di/                 # Módulo Hilt
-├── domain/usecase/     # Casos de uso
-├── navigation/         # Rutas y NavHost
-└── ui/                 # Pantallas por funcionalidad, componentes y tema
-```
-
-## Tecnologías
-
-- Kotlin y Jetpack Compose (Material 3)
-- Navigation Compose
-- Room (transacciones y metas) y DataStore Preferences (datos de usuario)
-- Hilt (inyección de dependencias) y KSP
-- Gradle con catálogo de versiones (`gradle/libs.versions.toml`)
-
-Configuración: `minSdk 26`, `targetSdk 37`, `compileSdk 37`.
-
-## Diseño
-
-> Completar con los enlaces/archivos reales.
-
-- Wireframe en papel: _pendiente de subir a `docs/` (fotos)_
-- Wireframe digital en Figma: _pendiente de agregar el enlace_
-
-## Cómo compilar y ejecutar
-
-Requisitos: Android Studio reciente (compatible con AGP 9.3) y JDK 17 o superior.
-
-1. Clonar el repositorio y abrirlo en Android Studio.
-2. Sincronizar Gradle y ejecutar en un emulador o dispositivo físico (Android 8.0 / API 26 o superior).
-
-Desde terminal:
+Para ejecutarla, abre el proyecto en Android Studio y ejecútalo en un emulador o dispositivo, o desde la terminal:
 
 ```bash
 ./gradlew assembleDebug
 ```
-
-## Publicación
-
-- [x] Probado en dispositivo físico
-- [x] Keystore de firma creado (guardado fuera del repositorio)
-- [x] `.aab` generado (`./gradlew bundleRelease`)
-- [ ] Ficha de Google Play (nombre, descripción, capturas, ícono)
-- [x] Política de privacidad: [`PRIVACY.md`](PRIVACY.md) (enlazada desde Perfil y Créditos de la app)
-- [ ] Aplicación publicada: _enlace pendiente_
-
-### Generar el `.aab` firmado
-
-1. Crear el archivo `keystore.properties` en la raíz del proyecto (está en `.gitignore`, **nunca se sube**):
-
-   ```properties
-   storeFile=C:/ruta/a/hormiapp-upload.jks
-   storePassword=...
-   keyAlias=hormiapp
-   keyPassword=...
-   ```
-
-2. Ejecutar `./gradlew bundleRelease`. El resultado queda en `app/build/outputs/bundle/release/app-release.aab`.
-
-El build de release usa R8 (reduce y ofusca el código). Las reglas para que Room funcione están en `app/src/main/keepRules/rules.keep`. Sin `keystore.properties` el release se genera sin firmar. La llave de firma debe guardarse con copia fuera del equipo: no se puede recuperar si se pierde.
-
-## Flujo de trabajo del equipo
-
-- Rama principal: `main`.
-- Cada integrante trabaja en su propia rama y la integra mediante pull request.
-- Mensajes de commit con prefijos: `feat:`, `fix:`, `ui:`, `style:`, `build:`, `chore:`.
