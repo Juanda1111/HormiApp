@@ -4,6 +4,8 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -47,12 +49,20 @@ fun CreditosScreen(
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)
         )
 
+        // Se puede desplazar para que nada quede cortado en pantallas bajas; en pantallas altas
+        // el pie de página queda pegado abajo (altura mínima = espacio disponible).
+        BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
+            val minHeight = maxHeight
         Column(
             modifier = Modifier
-                .fillMaxSize()
+                .fillMaxWidth()
+                .heightIn(min = minHeight)
+                .verticalScroll(rememberScrollState())
                 .padding(horizontal = 24.dp, vertical = 16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.SpaceBetween
         ) {
+          Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Spacer(modifier = Modifier.height(24.dp))
             
             // Logo
@@ -112,7 +122,10 @@ fun CreditosScreen(
                 roleText = "Desarrollo Android"
             )
             
-            Spacer(modifier = Modifier.weight(1f))
+          }
+
+          Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Spacer(modifier = Modifier.height(24.dp))
             
             // Footer
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -143,6 +156,8 @@ fun CreditosScreen(
             }
             
             Spacer(modifier = Modifier.height(32.dp))
+          }
+        }
         }
     }
 }
