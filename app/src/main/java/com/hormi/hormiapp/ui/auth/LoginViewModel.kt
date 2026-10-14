@@ -5,6 +5,8 @@ import androidx.lifecycle.viewModelScope
 import com.hormi.hormiapp.data.preferences.LoginResult
 import com.hormi.hormiapp.data.preferences.UserPreferencesRepository
 import com.hormi.hormiapp.domain.usecase.preferences.GetUserNameUseCase
+import com.hormi.hormiapp.domain.usecase.preferences.StartDemoUseCase
+import com.hormi.hormiapp.util.AccountId
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -16,7 +18,8 @@ import javax.inject.Inject
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val getUserNameUseCase: GetUserNameUseCase,
-    private val preferences: UserPreferencesRepository
+    private val preferences: UserPreferencesRepository,
+    private val startDemoUseCase: StartDemoUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(LoginUiState())
@@ -59,6 +62,16 @@ class LoginViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
+            // Credenciales de demostración (Demo / 1234) para la revisión de Google Play: si la
+            // cuenta aún no existe en este celular, se crea con datos de ejemplo.
+            if (AccountId.isReserved(currentState.nombre) &&
+                currentState.pin == StartDemoUseCase.DEMO_PIN &&
+                !preferences.accountExists(currentState.nombre)
+            ) {
+                startDemoUseCase()
+                onSuccess()
+                return@launch
+            }
             when (preferences.login(currentState.nombre, currentState.pin)) {
                 LoginResult.OK -> onSuccess()
                 LoginResult.NOT_FOUND -> _uiState.value = currentState.copy(error = "No existe una cuenta con ese nombre")
